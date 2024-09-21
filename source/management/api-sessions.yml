@@ -1,82 +1,86 @@
----
-
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   api-sessions:
     get:
+      tags:
+      - API Session
       summary: List active API sessions
       description: |
         Returns a list of active API sessions. The resources can be sorted, filtered, and paginated. This endpoint
         requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - API Session
       operationId: listAPISessions
-      produces:
-        - application/json; charset=utf-8
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listAPISessions'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listAPISessions'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
   api-sessions-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - API Session
       summary: Retrieves a single API Session
       description: Retrieves a single API Session by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - API Session
       operationId: detailAPISessions
       responses:
-        '200':
-          $ref: '#/responses/detailAPISession'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/detailAPISession'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     delete:
+      tags:
+      - API Session
       summary: Deletes an API Sessions
       description: Deletes and API sesion by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-      tags:
-        - API Session
       operationId: deleteAPISessions
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/deleteResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '403':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listAPISessions:
-    description: A list of active API Sessions
-    schema:
-      $ref: '../shared/api-sessions.yml#/definitions/listAPISessionsEnvelope'
-  detailAPISession:
-    description: Retrieves a singular API Session by id
-    schema:
-      $ref: '../shared/api-sessions.yml#/definitions/detailApiSessionEnvelope'
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/deleteResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "403":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
+components:
+  responses:
+    listAPISessions:
+      description: A list of active API Sessions
+      content:
+        '*/*':
+          schema:
+            $ref: ../shared/api-sessions.yml#/definitions/listAPISessionsEnvelope
+    detailAPISession:
+      description: Retrieves a singular API Session by id
+      content:
+        '*/*':
+          schema:
+            $ref: ../shared/api-sessions.yml#/definitions/detailApiSessionEnvelope
+x-original-swagger-version: null

@@ -1,127 +1,135 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   root:
     get:
-      summary: Returns version information
-      security: [ ]
       tags:
-        - Informational
+      - Informational
+      summary: Returns version information
       operationId: listRoot
       responses:
-        '200':
-          $ref: '#/responses/listVersion'
+        "200":
+          $ref: '#/components/responses/listVersion'
+      security: []
   version:
     get:
-      summary: Returns version information
-      security: [ ]
       tags:
-        - Informational
+      - Informational
+      summary: Returns version information
       operationId: listVersion
       responses:
-        '200':
-          $ref: '#/responses/listVersion'
+        "200":
+          $ref: '#/components/responses/listVersion'
+      security: []
   enumerated-capabilities:
     get:
-      summary: Returns all capabilities this version of the controller is aware of, enabled or not.
-      security: [ ]
       tags:
-        - Informational
+      - Informational
+      summary: "Returns all capabilities this version of the controller is aware of,\
+        \ enabled or not."
       operationId: listEnumeratedCapabilities
       responses:
-        '200':
-          $ref: '#/responses/listEnumeratedCapabilities'
-responses:
-  listVersion:
-    description: Version information for the controller
-    schema:
-      $ref: '#/definitions/listVersionEnvelope'
-  listEnumeratedCapabilities:
-    description: A typed and enumerated list of capabilities
-    schema:
-      $ref: '#/definitions/listEnumeratedCapabilitiesEnvelope'
-
-definitions:
-  listEnumeratedCapabilitiesEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/listEnumeratedCapabilities'
+      security: []
+components:
+  schemas:
+    listEnumeratedCapabilitiesEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      data:
-        type: array
-        items:
-          $ref: '#/definitions/capabilities'
-  listVersionEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/capabilities'
+    listVersionEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/version'
-  version:
-    type: object
-    properties:
-      buildDate:
-        type: string
-        example: '2020-02-11 16:09:08'
-      revision:
-        type: string
-        example: 'ea556fc18740'
-      runtimeVersion:
-        type: string
-        example: 'go1.13.5'
-      version:
-        type: string
-        example: 'v0.9.0'
-      apiVersions:
-        type: object
-        additionalProperties:
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/version'
+    version:
+      type: object
+      properties:
+        buildDate:
+          type: string
+          example: 2020-02-11 16:09:08
+        revision:
+          type: string
+          example: ea556fc18740
+        runtimeVersion:
+          type: string
+          example: go1.13.5
+        version:
+          type: string
+          example: v0.9.0
+        apiVersions:
           type: object
           additionalProperties:
-            $ref: '#/definitions/apiVersion'
-      capabilities:
-        type: array
-        items:
-          type: string
-  capabilities:
-    type: string
-    enum:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/apiVersion'
+        capabilities:
+          type: array
+          items:
+            type: string
+    capabilities:
+      type: string
+      enum:
       - OIDC_AUTH
       - HA_CONTROLLER
-  apiVersion:
-    type: object
-    required:
+    apiVersion:
+      required:
       - path
-    properties:
-      version:
-        type: string
-      path:
-        type: string
-      apiBaseUrls:
-        type: array
-        items:
+      type: object
+      properties:
+        version:
           type: string
-  versionInfo:
-    type: object
-    required:
-      - os
-      - version
+        path:
+          type: string
+        apiBaseUrls:
+          type: array
+          items:
+            type: string
+    versionInfo:
+      required:
       - arch
       - buildDate
+      - os
       - revision
-    properties:
-      os:
-        type: string
-      version:
-        type: string
-      arch:
-        type: string
-      buildDate:
-        type: string
-      revision:
-        type: string
+      - version
+      type: object
+      properties:
+        os:
+          type: string
+        version:
+          type: string
+        arch:
+          type: string
+        buildDate:
+          type: string
+        revision:
+          type: string
+  responses:
+    listVersion:
+      description: Version information for the controller
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listVersionEnvelope'
+    listEnumeratedCapabilities:
+      description: A typed and enumerated list of capabilities
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listEnumeratedCapabilitiesEnvelope'
+x-original-swagger-version: null

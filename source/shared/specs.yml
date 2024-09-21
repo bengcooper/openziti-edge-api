@@ -1,105 +1,111 @@
----
-
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   specs:
     get:
-      summary: Returns a list of API specs
-      description: Returns a list of spec files embedded within the controller for consumption/documentation/code geneartion
-      security: [ ]
       tags:
-        - Informational
+      - Informational
+      summary: Returns a list of API specs
+      description: Returns a list of spec files embedded within the controller for
+        consumption/documentation/code geneartion
       operationId: listSpecs
       responses:
-        '200':
-          $ref: '#/responses/listSpecs'
+        "200":
+          $ref: '#/components/responses/listSpecs'
+      security: []
   specs-id:
-    parameters:
-      - $ref: 'parameters.yml#/id'
     get:
-      summary: Return a single spec resource
-      description: Returns single spec resource embedded within the controller for consumption/documentation/code geneartion
-      security: [ ]
       tags:
-        - Informational
+      - Informational
+      summary: Return a single spec resource
+      description: Returns single spec resource embedded within the controller for
+        consumption/documentation/code geneartion
       operationId: detailSpec
       responses:
-        '200':
-          $ref: '#/responses/detailSpec'
-  specs-id-spec:
+        "200":
+          $ref: '#/components/responses/detailSpec'
+      security: []
     parameters:
-      - $ref: 'parameters.yml#/id'
+    - $ref: parameters.yml#/id
+  specs-id-spec:
     get:
-      summary: Returns the spec's file
-      description: Return the body of the specification (i.e. Swagger, OpenAPI 2.0, 3.0, etc).
-      security: [ ]
       tags:
-        - Informational
+      - Informational
+      summary: Returns the spec's file
+      description: "Return the body of the specification (i.e. Swagger, OpenAPI 2.0,\
+        \ 3.0, etc)."
       operationId: detailSpecBody
-      produces:
-        - text/yaml
-        - application/json
       responses:
-        '200':
-          $ref: '#/responses/detailSpecBody'
-
-responses:
-  listSpecs:
-    description: A list of specifications
-    schema:
-      $ref: '#/definitions/listSpecsEnvelope'
-  detailSpec:
-    description: A single specification
-    schema:
-      $ref: '#/definitions/detailSpecEnvelope'
-  detailSpecBody:
-    description: Returns the document that represents the specification
-    schema:
-      $ref: '#/definitions/detailSpecBodyEnvelope'
-
-definitions:
-  listSpecsEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/detailSpecBody'
+      security: []
+    parameters:
+    - $ref: parameters.yml#/id
+components:
+  schemas:
+    listSpecsEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/specList'
-  detailSpecEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/specList'
+    detailSpecEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/specDetail'
-  detailSpecBodyEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/specDetail'
+    detailSpecBodyEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/specBodyDetail'
-  specList:
-    type: array
-    items:
-      $ref: '#/definitions/specDetail'
-  specDetail:
-    type: object
-    allOf:
-      - $ref: 'base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/specBodyDetail'
+    specList:
+      type: array
+      items:
+        $ref: '#/components/schemas/specDetail'
+    specDetail:
+      allOf:
+      - $ref: base-entity.yml#/definitions/baseEntity
+      - required:
+        - name
+        type: object
         properties:
           name:
             type: string
-  specBodyDetail:
-    type: string
+    specBodyDetail:
+      type: string
+  responses:
+    listSpecs:
+      description: A list of specifications
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listSpecsEnvelope'
+    detailSpec:
+      description: A single specification
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailSpecEnvelope'
+    detailSpecBody:
+      description: Returns the document that represents the specification
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailSpecBodyEnvelope'
+x-original-swagger-version: null

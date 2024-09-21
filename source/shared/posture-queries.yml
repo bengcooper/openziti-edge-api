@@ -1,33 +1,35 @@
----
-
-definitions:
-  postureQueries:
-    type: object
-    required:
-      - policyId
+openapi: 3.0.1
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    postureQueries:
+      required:
       - isPassing
+      - policyId
       - postureQueries
-    properties:
-      policyId:
-        type: string
-      isPassing:
-        type: boolean
-      policyType:
-        $ref: 'base-entity.yml#/definitions/dialBind'
-      postureQueries:
-        type: array
-        items:
-          $ref: '#/definitions/postureQuery'
-  postureQuery:
-    type: object
-    allOf:
-      - $ref: 'base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - queryType
-          - isPassing
-          - timeout
-          - timeoutRemaining
+      type: object
+      properties:
+        policyId:
+          type: string
+        isPassing:
+          type: boolean
+        policyType:
+          $ref: base-entity.yml#/definitions/dialBind
+        postureQueries:
+          type: array
+          items:
+            $ref: '#/components/schemas/postureQuery'
+    postureQuery:
+      allOf:
+      - $ref: base-entity.yml#/definitions/baseEntity
+      - required:
+        - isPassing
+        - queryType
+        - timeout
+        - timeoutRemaining
+        type: object
         properties:
           isPassing:
             type: boolean
@@ -36,17 +38,18 @@ definitions:
           timeoutRemaining:
             type: integer
           queryType:
-            $ref: 'posture-checks.yml#/definitions/postureCheckType'
+            $ref: posture-checks.yml#/definitions/postureCheckType
           process:
-            $ref: '#/definitions/postureQueryProcess'
+            $ref: '#/components/schemas/postureQueryProcess'
           processes:
             type: array
             items:
-              $ref: '#/definitions/postureQueryProcess'
-  postureQueryProcess:
-    type: object
-    properties:
-      osType:
-        $ref: 'posture-checks.yml#/definitions/osType'
-      path:
-        type: string
+              $ref: '#/components/schemas/postureQueryProcess'
+    postureQueryProcess:
+      type: object
+      properties:
+        osType:
+          $ref: posture-checks.yml#/definitions/osType
+        path:
+          type: string
+x-original-swagger-version: null

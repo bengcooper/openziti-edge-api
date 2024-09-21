@@ -1,21 +1,25 @@
----
-
-definitions:
-  terminatorCost:
-    type: integer
-    minimum: 0
-    maximum: 65535
-  terminatorPrecedence:
-    type: string
-    enum:
+openapi: 3.0.1
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    terminatorCost:
+      maximum: 65535
+      minimum: 0
+      type: integer
+    terminatorPrecedence:
+      type: string
+      enum:
       - default
       - required
       - failed
-  terminatorPrecedenceMap:
-    type: object
-    additionalProperties:
-      $ref: '#/definitions/terminatorPrecedence'
-  terminatorCostMap:
-    type: object
-    additionalProperties:
-      $ref: '#/definitions/terminatorCost'
+    terminatorPrecedenceMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/terminatorPrecedence'
+    terminatorCostMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/terminatorCost'
+x-original-swagger-version: null

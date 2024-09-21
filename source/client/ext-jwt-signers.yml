@@ -1,68 +1,71 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   external-jwt-signers:
     get:
+      tags:
+      - External JWT Signer
       summary: List Client Authentication External JWT
       description: Retrieves a list of external JWT signers for authentication
-      tags:
-        - External JWT Signer
       operationId: listExternalJwtSigners
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listClientExternalJwtSigners'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listClientExternalJwtSigners:
-    description: A list of External JWT Signers
-    schema:
-      $ref: '#/definitions/listClientExternalJwtSignersEnvelope'
-
-definitions:
-  listClientExternalJwtSignersEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/listClientExternalJwtSigners'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+components:
+  schemas:
+    listClientExternalJwtSignersEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/clientExternalJwtSignerList'
-  clientExternalJwtSignerList:
-    description: An array of External JWT Signers resources
-    type: array
-    items:
-      $ref: '#/definitions/clientExternalJwtSignerDetail'
-  clientExternalJwtSignerDetail:
-    description: A External JWT Signer resource
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
-          - externalAuthUrl
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/clientExternalJwtSignerList'
+    clientExternalJwtSignerList:
+      type: array
+      description: An array of External JWT Signers resources
+      items:
+        $ref: '#/components/schemas/clientExternalJwtSignerDetail'
+    clientExternalJwtSignerDetail:
+      description: A External JWT Signer resource
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - externalAuthUrl
+        - name
+        type: object
         properties:
           name:
             type: string
-            example: 'MyApps Signer'
+            example: MyApps Signer
           externalAuthUrl:
             type: string
             format: url
           clientId:
             type: string
-            x-nullable: true
+            nullable: true
           scopes:
             type: array
             items:
               type: string
+  responses:
+    listClientExternalJwtSigners:
+      description: A list of External JWT Signers
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listClientExternalJwtSignersEnvelope'
+x-original-swagger-version: null

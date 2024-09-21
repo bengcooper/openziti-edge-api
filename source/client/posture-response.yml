@@ -1,126 +1,124 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   posture-response:
     post:
+      tags:
+      - Posture Checks
       summary: Submit a posture response to a posture query
       description: Submits posture responses
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Posture Checks
       operationId: createPostureResponse
-      parameters:
-        - name: postureResponse
-          in: body
-          required: true
-          description: A Posture Response
-          schema:
-            $ref: '#/definitions/postureResponseCreate'
+      requestBody:
+        description: A Posture Response
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/postureResponseCreate'
+        required: true
       responses:
-        '201':
-          $ref: '#/responses/postureResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "201":
+          $ref: '#/components/responses/postureResponse'
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: postureResponse
   posture-response-bulk:
     post:
+      tags:
+      - Posture Checks
       summary: Submit multiple posture responses
       description: Submits posture responses
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Posture Checks
       operationId: createPostureResponseBulk
-      parameters:
-        - name: postureResponse
-          in: body
-          required: true
-          description: A Posture Response
-          schema:
-            # using a named array definition causes issues w/ code gen
-            type: array
-            items:
-              $ref: "#/definitions/postureResponseCreate"
+      requestBody:
+        description: A Posture Response
+        content:
+          '*/*':
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/postureResponseCreate'
+        required: true
       responses:
-        '200':
-          $ref: '#/responses/postureResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  postureResponse:
-    description: Contains a list of services that have had their timers altered
-    schema:
-      $ref: '#/definitions/postureResponseEnvelope'
-
-definitions:
-  postureResponseEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/postureResponse'
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: postureResponse
+components:
+  schemas:
+    postureResponseEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/postureResponse'
-  postureResponseService:
-    type: object
-    required:
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/postureResponse'
+    postureResponseService:
+      required:
       - id
       - name
       - postureQueryType
       - timeout
       - timeoutRemaining
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-      postureQueryType:
-        type: string
-      timeout:
-        type: integer
-      timeoutRemaining:
-        type: integer
-  postureResponse:
-    type: object
-    required:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        postureQueryType:
+          type: string
+        timeout:
+          type: integer
+        timeoutRemaining:
+          type: integer
+    postureResponse:
+      required:
       - services
-    properties:
-      services:
-        type: array
-        items:
-          $ref: '#/definitions/postureResponseService'
-  postureResponseCreate:
-    type: object
-    discriminator: typeId
-    required:
+      type: object
+      properties:
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/postureResponseService'
+    postureResponseCreate:
+      required:
       - id
       - typeId
-    properties:
-      id:
-        type: string
-      typeId:
-        $ref: '../shared/posture-checks.yml#/definitions/postureCheckType'
-
-  postureResponseOperatingSystemCreate:
-    allOf:
-      - $ref: '#/definitions/postureResponseCreate'
-      - type: object
-        required:
-          - type
-          - version
+      type: object
+      properties:
+        id:
+          type: string
+        typeId:
+          $ref: ../shared/posture-checks.yml#/definitions/postureCheckType
+      discriminator:
+        propertyName: typeId
+    postureResponseOperatingSystemCreate:
+      allOf:
+      - $ref: '#/components/schemas/postureResponseCreate'
+      - required:
+        - type
+        - version
+        type: object
         properties:
           type:
             type: string
@@ -128,38 +126,33 @@ definitions:
             type: string
           build:
             type: string
-    x-class: "OS"
-
-  postureResponseDomainCreate:
-    allOf:
-      - $ref: '#/definitions/postureResponseCreate'
-      - type: object
-        required:
-          - domain
+      x-class: OS
+    postureResponseDomainCreate:
+      allOf:
+      - $ref: '#/components/schemas/postureResponseCreate'
+      - required:
+        - domain
+        type: object
         properties:
           domain:
             type: string
-    x-class: "DOMAIN"
-
-  postureResponseMacAddressCreate:
-    allOf:
-      - $ref: '#/definitions/postureResponseCreate'
-      - type: object
-        required:
-          - macAddresses
+      x-class: DOMAIN
+    postureResponseMacAddressCreate:
+      allOf:
+      - $ref: '#/components/schemas/postureResponseCreate'
+      - required:
+        - macAddresses
+        type: object
         properties:
           macAddresses:
             type: array
             items:
               type: string
-    x-class: "MAC"
-
-  postureResponseProcessCreate:
-    allOf:
-      - $ref: '#/definitions/postureResponseCreate'
+      x-class: MAC
+    postureResponseProcessCreate:
+      allOf:
+      - $ref: '#/components/schemas/postureResponseCreate'
       - type: object
-        required:
-          - process
         properties:
           path:
             type: string
@@ -171,15 +164,22 @@ definitions:
             type: array
             items:
               type: string
-    x-class: "PROCESS"
-
-  postureResponseEndpointStateCreate:
-    allOf:
-      - $ref: '#/definitions/postureResponseCreate'
+      x-class: PROCESS
+    postureResponseEndpointStateCreate:
+      allOf:
+      - $ref: '#/components/schemas/postureResponseCreate'
       - type: object
         properties:
           unlocked:
             type: boolean
           woken:
             type: boolean
-    x-class: "ENDPOINT_STATE"
+      x-class: ENDPOINT_STATE
+  responses:
+    postureResponse:
+      description: Contains a list of services that have had their timers altered
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/postureResponseEnvelope'
+x-original-swagger-version: null

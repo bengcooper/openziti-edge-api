@@ -1,89 +1,82 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   controllers:
     get:
+      tags:
+      - Controllers
       summary: List controllers
       description: Retrieves a list of controllers
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Controllers
       operationId: listControllers
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listControllers'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listControllers:
-    description: A list of controllers
-    schema:
-      $ref: '#/definitions/listControllersEnvelope'
-
-definitions:
-  listControllersEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/listControllers'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+components:
+  schemas:
+    listControllersEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/controllersList'
-  controllersList:
-    description: An array of controller resources
-    type: array
-    items:
-      $ref: '#/definitions/controllerDetail'
-
-  apiAddress:
-    type: object
-    properties:
-      url:
-        type: string
-      version:
-        type: string
-  apiAddressArray:
-    type: array
-    items:
-      $ref: '#/definitions/apiAddress'
-
-  apiAddressList:
-    type: object
-    additionalProperties:
-      $ref: '#/definitions/apiAddressArray'
-
-  controllerDetail:
-    description: A controller resource
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
-          - certPem
-          - fingerprint
-          - isOnline
-          - lastJoinedAt
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/controllersList'
+    controllersList:
+      type: array
+      description: An array of controller resources
+      items:
+        $ref: '#/components/schemas/controllerDetail'
+    apiAddress:
+      type: object
+      properties:
+        url:
+          type: string
+        version:
+          type: string
+    apiAddressArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/apiAddress'
+    apiAddressList:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/apiAddressArray'
+    controllerDetail:
+      description: A controller resource
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - certPem
+        - fingerprint
+        - isOnline
+        - lastJoinedAt
+        - name
+        type: object
         properties:
           name:
             type: string
           ctrlAddress:
             type: string
-            x-nullable: true
+            nullable: true
           apiAddresses:
-              $ref: '#/definitions/apiAddressList'
+            $ref: '#/components/schemas/apiAddressList'
           certPem:
             type: string
           fingerprint:
@@ -93,3 +86,11 @@ definitions:
           lastJoinedAt:
             type: string
             format: date-time
+  responses:
+    listControllers:
+      description: A list of controllers
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listControllersEnvelope'
+x-original-swagger-version: null

@@ -1,103 +1,108 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   posture-check-types:
     get:
+      tags:
+      - Posture Checks
       summary: List a subset of posture check types
       description: |
         Retrieves a list of posture check types
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Posture Checks
       operationId: listPostureCheckTypes
-      produces:
-        - application/json; charset=utf-8
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listPostureCheckTypes'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listPostureCheckTypes'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
   posture-check-types-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - Posture Checks
       summary: Retrieves a single posture check type
       description: Retrieves a single posture check type by id
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Posture Checks
       operationId: detailPostureCheckType
       responses:
-        '200':
-          $ref: '#/responses/detailPostureCheckType'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listPostureCheckTypes:
-    description: A list of posture check types
-    schema:
-      $ref: '#/definitions/listPostureCheckTypesEnvelope'
-  detailPostureCheckType:
-    description: Retrieves a singular posture check type by id
-    schema:
-      $ref: '#/definitions/detailPostureCheckTypeEnvelope'
-
-definitions:
-  listPostureCheckTypesEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/detailPostureCheckType'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
+components:
+  schemas:
+    listPostureCheckTypesEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/postureCheckTypeList'
-  detailPostureCheckTypeEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/postureCheckTypeList'
+    detailPostureCheckTypeEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/postureCheckTypeDetail'
-  postureCheckTypeList:
-    type: array
-    items:
-      $ref: '#/definitions/postureCheckTypeDetail'
-  postureCheckTypeDetail:
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
-          - operatingSystems
-          - version
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/postureCheckTypeDetail'
+    postureCheckTypeList:
+      type: array
+      items:
+        $ref: '#/components/schemas/postureCheckTypeDetail'
+    postureCheckTypeDetail:
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - name
+        - operatingSystems
+        - version
+        type: object
         properties:
           name:
             type: string
           operatingSystems:
             type: array
             items:
-              $ref: 'posture-checks.yml#/definitions/operatingSystem'
+              $ref: posture-checks.yml#/definitions/operatingSystem
           version:
             type: string
+  responses:
+    listPostureCheckTypes:
+      description: A list of posture check types
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listPostureCheckTypesEnvelope'
+    detailPostureCheckType:
+      description: Retrieves a singular posture check type by id
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailPostureCheckTypeEnvelope'
+x-original-swagger-version: null

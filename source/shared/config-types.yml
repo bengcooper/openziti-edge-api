@@ -1,7 +1,12 @@
----
-definitions:
-  configTypes:
-    description: Specific configuration types that should be returned
-    type: array
-    items:
-      type: string
+openapi: 3.0.1
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    configTypes:
+      type: array
+      description: Specific configuration types that should be returned
+      items:
+        type: string
+x-original-swagger-version: null

@@ -1,303 +1,317 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   edge-router-policies:
     get:
+      tags:
+      - Edge Router Policy
       summary: List edge router policies
       description: |
         Retrieves a list of edge router policy resources; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
       operationId: listEdgeRouterPolicies
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listEdgeRouterPolicies'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listEdgeRouterPolicies'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     post:
+      tags:
+      - Edge Router Policy
       summary: Create an edge router policy resource
       description: Create an edge router policy resource. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
       operationId: createEdgeRouterPolicy
-      parameters:
-        - name: policy
-          in: body
-          required: true
-          description: An edge router policy to create
-          schema:
-            $ref: '#/definitions/edgeRouterPolicyCreate'
+      requestBody:
+        description: An edge router policy to create
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/edgeRouterPolicyCreate'
+        required: true
       responses:
-        '201':
-          $ref: '../shared/standard-responses.yml#/responses/createResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "201":
+          $ref: ../shared/standard-responses.yml#/responses/createResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: policy
   edge-router-policies-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - Edge Router Policy
       summary: Retrieves a single edge router policy
       description: Retrieves a single edge router policy by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
       operationId: detailEdgeRouterPolicy
       responses:
-        '200':
-          $ref: '#/responses/detailEdgeRouterPolicy'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/detailEdgeRouterPolicy'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     put:
+      tags:
+      - Edge Router Policy
       summary: Update all fields on an edge router policy
-      description: Update all fields on an edge router policy by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
+      description: Update all fields on an edge router policy by id. Requires admin
+        access.
       operationId: updateEdgeRouterPolicy
-      parameters:
-        - name: policy
-          in: body
-          required: true
-          description: An edge router policy update object
-          schema:
-            $ref: '#/definitions/edgeRouterPolicyUpdate'
+      requestBody:
+        description: An edge router policy update object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/edgeRouterPolicyUpdate'
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/updateResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-    patch:
-      summary: Update the supplied fields on an edge router policy
-      description: Update the supplied fields on an edge router policy. Requires admin access.
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/updateResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
       security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
-      operationId: patchEdgeRouterPolicy
-      parameters:
-        - name: policy
-          in: body
-          required: true
-          description: An edge router policy patch object
-          schema:
-            $ref: '#/definitions/edgeRouterPolicyPatch'
-      responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/patchResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: policy
     delete:
+      tags:
+      - Edge Router Policy
       summary: Delete an edge router policy
       description: Delete an edge router policy by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
       operationId: deleteEdgeRouterPolicy
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/deleteResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '409':
-          $ref: '../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-  edge-router-policies-id-edge-routers:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/deleteResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "409":
+          $ref: ../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    patch:
+      tags:
+      - Edge Router Policy
+      summary: Update the supplied fields on an edge router policy
+      description: Update the supplied fields on an edge router policy. Requires admin
+        access.
+      operationId: patchEdgeRouterPolicy
+      requestBody:
+        description: An edge router policy patch object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/edgeRouterPolicyPatch'
+        required: true
+      responses:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/patchResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: policy
     parameters:
-      - $ref: '../shared/parameters.yml#/id'
+    - $ref: ../shared/parameters.yml#/id
+  edge-router-policies-id-edge-routers:
     get:
+      tags:
+      - Edge Router Policy
       summary: List edge routers a policy affects
       description: |
         Retrieves a list of edge routers an edge router policy resources affects; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
       operationId: listEdgeRouterPolicyEdgeRouters
       responses:
-        '200':
-          $ref: 'edge-routers.yml#/responses/listEdgeRouters'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-  edge-router-policies-id-identities:
+        "200":
+          $ref: edge-routers.yml#/responses/listEdgeRouters
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     parameters:
-      - $ref: '../shared/parameters.yml#/id'
+    - $ref: ../shared/parameters.yml#/id
+  edge-router-policies-id-identities:
     get:
+      tags:
+      - Edge Router Policy
       summary: List identities an edge router policy affects
       description: |
         Retrieves a list of identities an edge router policy resources affects; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Edge Router Policy
       operationId: listEdgeRouterPolicyIdentities
       responses:
-        '200':
-          $ref: 'identities.yml#/responses/listIdentities'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listEdgeRouterPolicies:
-    description: A list of edge router policies
-    schema:
-      $ref: '#/definitions/listEdgeRouterPoliciesEnvelope'
-  detailEdgeRouterPolicy:
-    description: A single edge router policy
-    schema:
-      $ref: '#/definitions/detailEdgeRouterPolicyEnvelope'
-
-definitions:
-  listEdgeRouterPoliciesEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: identities.yml#/responses/listIdentities
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
+components:
+  schemas:
+    listEdgeRouterPoliciesEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/edgeRouterPolicyList'
-  detailEdgeRouterPolicyEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/edgeRouterPolicyList'
+    detailEdgeRouterPolicyEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/edgeRouterPolicyDetail'
-  edgeRouterPolicyCreate:
-    required:
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/edgeRouterPolicyDetail'
+    edgeRouterPolicyCreate:
+      required:
       - name
       - semantic
-    properties:
-      name:
-        type: string
-      semantic:
-        $ref: '../shared/base-entity.yml#/definitions/semantic'
-      edgeRouterRoles:
-        $ref: '../shared/base-entity.yml#/definitions/roles'
-      identityRoles:
-        $ref: '../shared/base-entity.yml#/definitions/roles'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  edgeRouterPolicyUpdate:
-    required:
+      type: object
+      properties:
+        name:
+          type: string
+        semantic:
+          $ref: ../shared/base-entity.yml#/definitions/semantic
+        edgeRouterRoles:
+          $ref: ../shared/base-entity.yml#/definitions/roles
+        identityRoles:
+          $ref: ../shared/base-entity.yml#/definitions/roles
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+    edgeRouterPolicyUpdate:
+      required:
       - name
       - semantic
-    properties:
-      name:
-        type: string
-      semantic:
-        $ref: '../shared/base-entity.yml#/definitions/semantic'
-      edgeRouterRoles:
-        $ref: '../shared/base-entity.yml#/definitions/roles'
-      identityRoles:
-        $ref: '../shared/base-entity.yml#/definitions/roles'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  edgeRouterPolicyPatch:
-    properties:
-      name:
-        type: string
-      semantic:
-        $ref: '../shared/base-entity.yml#/definitions/semantic'
-      edgeRouterRoles:
-        $ref: '../shared/base-entity.yml#/definitions/roles'
-      identityRoles:
-        $ref: '../shared/base-entity.yml#/definitions/roles'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  edgeRouterPolicyList:
-    type: array
-    items:
-      $ref: '#/definitions/edgeRouterPolicyDetail'
-  edgeRouterPolicyDetail:
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
-          - semantic
-          - edgeRouterRoles
-          - edgeRouterRolesDisplay
-          - identityRoles
-          - identityRolesDisplay
-          - isSystem
+      type: object
+      properties:
+        name:
+          type: string
+        semantic:
+          $ref: ../shared/base-entity.yml#/definitions/semantic
+        edgeRouterRoles:
+          $ref: ../shared/base-entity.yml#/definitions/roles
+        identityRoles:
+          $ref: ../shared/base-entity.yml#/definitions/roles
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+    edgeRouterPolicyPatch:
+      type: object
+      properties:
+        name:
+          type: string
+        semantic:
+          $ref: ../shared/base-entity.yml#/definitions/semantic
+        edgeRouterRoles:
+          $ref: ../shared/base-entity.yml#/definitions/roles
+        identityRoles:
+          $ref: ../shared/base-entity.yml#/definitions/roles
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+    edgeRouterPolicyList:
+      type: array
+      items:
+        $ref: '#/components/schemas/edgeRouterPolicyDetail'
+    edgeRouterPolicyDetail:
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - edgeRouterRoles
+        - edgeRouterRolesDisplay
+        - identityRoles
+        - identityRolesDisplay
+        - isSystem
+        - name
+        - semantic
+        type: object
         properties:
           name:
             type: string
           semantic:
-            $ref: '../shared/base-entity.yml#/definitions/semantic'
+            $ref: ../shared/base-entity.yml#/definitions/semantic
           edgeRouterRoles:
-            $ref: '../shared/base-entity.yml#/definitions/roles'
+            $ref: ../shared/base-entity.yml#/definitions/roles
           edgeRouterRolesDisplay:
-            $ref: '../shared/base-entity.yml#/definitions/namedRoles'
+            $ref: ../shared/base-entity.yml#/definitions/namedRoles
           identityRoles:
-            $ref: '../shared/base-entity.yml#/definitions/roles'
+            $ref: ../shared/base-entity.yml#/definitions/roles
           identityRolesDisplay:
-            $ref: '../shared/base-entity.yml#/definitions/namedRoles'
+            $ref: ../shared/base-entity.yml#/definitions/namedRoles
           isSystem:
             type: boolean
+  responses:
+    listEdgeRouterPolicies:
+      description: A list of edge router policies
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listEdgeRouterPoliciesEnvelope'
+    detailEdgeRouterPolicy:
+      description: A single edge router policy
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailEdgeRouterPolicyEnvelope'
+x-original-swagger-version: null

@@ -1,18 +1,23 @@
----
-definitions:
-  pagination:
-    type: object
-    required:
+openapi: 3.0.1
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    pagination:
+      required:
       - limit
       - offset
       - totalCount
-    properties:
-      limit:
-        type: number
-        format: int64
-      offset:
-        type: number
-        format: int64
-      totalCount:
-        type: number
-        format: int64
+      type: object
+      properties:
+        limit:
+          type: number
+          format: int64
+        offset:
+          type: number
+          format: int64
+        totalCount:
+          type: number
+          format: int64
+x-original-swagger-version: null

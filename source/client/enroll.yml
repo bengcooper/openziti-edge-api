@@ -1,34 +1,28 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   enroll:
-    parameters:
-      - $ref: '../shared/parameters.yml#/token-optional'
-      - $ref: '../shared/parameters.yml#/method-optional'
     post:
+      tags:
+      - Enroll
       summary: Enroll an identity via one-time-token
       description: present a OTT and CSR to receive a long-lived client certificate
       operationId: enroll
-      tags:
-        - Enroll
-      consumes:
-        - application/pkcs10
-        - application/json
-        - application/x-pem-file
-        - text/plain
-      produces:
-        #default to PEM for older clients that do not properly set/inspect accept/content-type headers
-        - application/x-pem-file
-        - application/json
       responses:
-        '200':
-          $ref: '#/responses/stringResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/stringResponse'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+    parameters:
+    - $ref: ../shared/parameters.yml#/token-optional
+    - $ref: ../shared/parameters.yml#/method-optional
   enroll-ca:
     post:
+      tags:
+      - Enroll
       summary: Enroll an identity with a pre-exchanged certificate
       description: |
         For CA auto enrollment, an identity is not created beforehand.
@@ -37,51 +31,39 @@ paths:
 
         During this process no CSRs are requires as the client should already be in possession of a valid certificate.
       operationId: enrollCa
-      tags:
-        - Enroll
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/emptyResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/emptyResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
   enroll-ott:
-    parameters:
-      - name: ottEnrollmentRequest
-        in: body
-        required: true
-        description: An OTT enrollment request
-        schema:
-          $ref: '#/definitions/ottEnrollmentRequest'
-
     post:
+      tags:
+      - Enroll
       summary: Enroll an identity via one-time-token
       description: |
         Enroll an identity via a one-time-token which is supplied via a query string parameter. This enrollment method
         expects a PEM encoded CSRs to be provided for fulfillment. It is up to the enrolling identity to manage the
         private key backing the CSR request.
       operationId: enrollOtt
-      tags:
-        - Enroll
       responses:
-        '200':
-          $ref: '#/responses/enrollmentCerts'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-  enroll-ottca:
+        "200":
+          $ref: '#/components/responses/enrollmentCerts'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
     parameters:
-      - name: ottEnrollmentRequest
-        in: body
-        required: true
-        description: An OTT enrollment request
-        schema:
-          $ref: '#/definitions/ottEnrollmentRequest'
+    - name: ottEnrollmentRequest
+      in: body
+      description: An OTT enrollment request
+      required: true
+  enroll-ottca:
     post:
+      tags:
+      - Enroll
       summary: Enroll an identity via one-time-token with a pre-exchanged client certificate
       description: |
         Enroll an identity via a one-time-token that also requires a pre-exchanged client certificate to match a
@@ -91,65 +73,59 @@ paths:
 
         As the client certificate has been pre-exchanged there is no CSR input to this enrollment method.
       operationId: enrollOttCa
-      tags:
-        - Enroll
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/emptyResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-  enroll-updb:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/emptyResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
     parameters:
-      - $ref: '../shared/parameters.yml#/token'
-      - name: updbCredentials
-        in: body
-        required: true
-        schema:
-            type: object
-            properties:
-              username:
-                $ref: 'shared/authenticate.yml#/definitions/username'
-              password:
-                $ref: 'shared/authenticate.yml#/definitions/password'
+    - name: ottEnrollmentRequest
+      in: body
+      description: An OTT enrollment request
+      required: true
+  enroll-updb:
     post:
+      tags:
+      - Enroll
       summary: Enroll an identity via one-time-token
       description: |
         Enrolls an identity via a one-time-token to establish an initial username and password combination
       operationId: enrollUpdb
-      tags:
-        - Enroll
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/emptyResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-  enroll-erott:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/emptyResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
     parameters:
-      - name: erOttEnrollmentRequest
-        in: body
-        required: true
-        description: An OTT enrollment request
-        schema:
-          $ref: '#/definitions/erOttEnrollmentRequest'
+    - $ref: ../shared/parameters.yml#/token
+    - name: updbCredentials
+      in: body
+      required: true
+  enroll-erott:
     post:
+      tags:
+      - Enroll
       summary: Enroll an edge-router
       description: |
         Enrolls an edge-router via a one-time-token to establish a certificate based identity.
       operationId: enrollErOtt
-      tags:
-        - Enroll
       responses:
-        '200':
-          $ref: '#/responses/erOttResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/erOttResponse'
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+    parameters:
+    - name: erOttEnrollmentRequest
+      in: body
+      description: An OTT enrollment request
+      required: true
   enroll-extend-router:
     post:
+      tags:
+      - Enroll
+      - Extend Enrollment
       summary: Extend the life of a currently enrolled router's certificates
       description: |
         Allows a router to extend its certificates' expiration date by
@@ -162,155 +138,170 @@ paths:
 
         This request must be made using the existing, valid, client certificate.
       operationId: extendRouterEnrollment
-      parameters:
-        - name: routerExtendEnrollmentRequest
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/routerExtendEnrollmentRequest'
-      tags:
-        - Enroll
-        - Extend Enrollment
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/routerExtendEnrollmentRequest'
+        required: true
       responses:
-        '200':
-          $ref: '#/responses/routerExtendEnrollmentResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
+        "200":
+          $ref: '#/components/responses/routerExtendEnrollmentResponse'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      x-codegen-request-body-name: routerExtendEnrollmentRequest
   enroll-jwks:
     get:
+      tags:
+      - Enroll
       summary: List JSON Web Keys associated with enrollment
       description: |
         Returns a list of JSON Web Keys (JWKS) that are used for enrollment signing. The keys listed here are used
         to sign and co-sign enrollment JWTs. They can be verified through a challenge endpoint, using the public keys
         from this endpoint to verify the target machine has possession of the related private key.
       operationId: getEnrollmentJwks
-      tags:
-        - Enroll
       responses:
-        '200':
-          $ref: '#/responses/getJwksResponse'
+        "200":
+          $ref: '#/components/responses/getJwksResponse'
   enroll-challenge:
     post:
-      summary: Allows verification of a controller or cluster of controllers as being the valid target for enrollment.
+      tags:
+      - Enroll
+      summary: Allows verification of a controller or cluster of controllers as being
+        the valid target for enrollment.
       description: |
         A caller may submit a nonce and a key id (kid) from the enrollment JWKS endpoint or enrollment JWT that will
         be used to sign the nonce. The resulting signature may be validated with the associated public key in order
         to verify a networks identity during enrollment. The nonce must be a valid formatted UUID.
       operationId: enrollmentChallenge
-      parameters:
-        - name: nonce
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/nonceChallenge'
-      tags:
-        - Enroll
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/nonceChallenge'
+        required: true
       responses:
-          '200':
-            $ref: '#/responses/nonceChallengeResponse'
-          '400':
-            $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-          '429':
-            $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  erOttResponse:
-    description: A response containing the edge routers signed certificates (server chain, server cert, CAs).
-    schema:
-      $ref: '#/definitions/enrollmentCertsEnvelope'
-  routerExtendEnrollmentResponse:
-    description: A response containing the edge routers new signed certificates (server chain, server cert, CAs).
-    schema:
-      $ref: '#/definitions/enrollmentCertsEnvelope'
-  enrollmentCerts:
-    description: A response containing and identities client certificate chains
-    schema:
-      $ref: '#/definitions/enrollmentCertsEnvelope'
-  stringResponse:
-    description: A response for multi-format legacy enrollment.
-    schema:
-      type: string
-  getJwksResponse:
-    description: A JWKS response for enrollment.
-    schema:
-      $ref: '../shared/jwks.yml#/definitions/jwks'
-  nonceChallengeResponse:
-    description: A nonce challenge response. The contents will be the signature of the nonce, the key id used, and algorithm used to produce the signature.
-    schema:
-      $ref: '#/definitions/nonceSignature'
-
-definitions:
-  ottEnrollmentRequest:
-    type: object
-    properties:
+        "200":
+          $ref: '#/components/responses/nonceChallengeResponse'
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      x-codegen-request-body-name: nonce
+components:
+  schemas:
+    ottEnrollmentRequest:
+      type: object
+      properties:
         token:
           type: string
         clientCsr:
           type: string
-  erOttEnrollmentRequest:
-    type: object
-    properties:
-      token:
-        type: string
-      clientCsr:
-        type: string
-      serverCsr:
-        type: string
-  enrollmentCertsEnvelope:
-    type: object
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/enrollmentCerts'
-  enrollmentCerts:
-    type: object
-    properties:
-      serverCert:
-        type: string
-        description: A PEM encoded set of certificates to use as the servers chain
-      cert:
-        type: string
-        description: A PEM encoded set of certificates to use as the client chain
-      ca:
-        type: string
-        description: A PEM encoded set of CA certificates to trust
-  routerExtendEnrollmentRequest:
-    type: object
-    required:
-      - serverCertCsr
+    erOttEnrollmentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        clientCsr:
+          type: string
+        serverCsr:
+          type: string
+    enrollmentCertsEnvelope:
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/enrollmentCerts'
+    enrollmentCerts:
+      type: object
+      properties:
+        serverCert:
+          type: string
+          description: A PEM encoded set of certificates to use as the servers chain
+        cert:
+          type: string
+          description: A PEM encoded set of certificates to use as the client chain
+        ca:
+          type: string
+          description: A PEM encoded set of CA certificates to trust
+    routerExtendEnrollmentRequest:
+      required:
       - certCsr
-    properties:
-      serverCertCsr:
-        type: string
-      certCsr:
-        type: string
-  nonceSignature:
-    type: object
-    required:
-      - signature
+      - serverCertCsr
+      type: object
+      properties:
+        serverCertCsr:
+          type: string
+        certCsr:
+          type: string
+    nonceSignature:
+      required:
       - algorithm
-      - kid
       - caPool
-    properties:
-      signature:
-        type: string
-      algorithm:
-        type: string
-      kid:
-        type: string
-      caPool:
-        type: string
-  nonceChallenge:
-    type: object
-    required:
-      - nonce
+      - kid
+      - signature
+      type: object
+      properties:
+        signature:
+          type: string
+        algorithm:
+          type: string
+        kid:
+          type: string
+        caPool:
+          type: string
+    nonceChallenge:
+      required:
       - keyId
-    properties:
-      nonce:
-        type: string
-        format: uuid
-      keyId:
-        type: string
+      - nonce
+      type: object
+      properties:
+        nonce:
+          type: string
+          format: uuid
+        keyId:
+          type: string
+  responses:
+    erOttResponse:
+      description: "A response containing the edge routers signed certificates (server\
+        \ chain, server cert, CAs)."
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/enrollmentCertsEnvelope'
+    routerExtendEnrollmentResponse:
+      description: "A response containing the edge routers new signed certificates\
+        \ (server chain, server cert, CAs)."
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/enrollmentCertsEnvelope'
+    enrollmentCerts:
+      description: A response containing and identities client certificate chains
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/enrollmentCertsEnvelope'
+    stringResponse:
+      description: A response for multi-format legacy enrollment.
+      content:
+        '*/*':
+          schema:
+            type: string
+    getJwksResponse:
+      description: A JWKS response for enrollment.
+      content:
+        '*/*':
+          schema:
+            $ref: ../shared/jwks.yml#/definitions/jwks
+    nonceChallengeResponse:
+      description: "A nonce challenge response. The contents will be the signature\
+        \ of the nonce, the key id used, and algorithm used to produce the signature."
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/nonceSignature'
+x-original-swagger-version: null

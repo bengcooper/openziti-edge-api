@@ -1,374 +1,385 @@
----
-
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   auth-policies:
     get:
+      tags:
+      - Auth Policy
       summary: List Auth Policies
       description: Retrieves a list of Auth Policies
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Auth Policy
       operationId: listAuthPolicies
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listAuthPolicies'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listAuthPolicies'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     post:
+      tags:
+      - Auth Policy
       summary: Creates an Auth Policy
       description: Creates an Auth Policy. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Auth Policy
       operationId: createAuthPolicy
-      parameters:
-        - name: authPolicy
-          in: body
-          required: true
-          description: An Auth Policy to create
-          schema:
-            $ref: '#/definitions/authPolicyCreate'
+      requestBody:
+        description: An Auth Policy to create
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/authPolicyCreate'
+        required: true
       responses:
-        '201':
-          $ref: '../shared/standard-responses.yml#/responses/createResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "201":
+          $ref: ../shared/standard-responses.yml#/responses/createResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: authPolicy
   auth-policies-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - Auth Policy
       summary: Retrieves a single Auth Policy
       description: Retrieves a single Auth Policy by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Auth Policy
       operationId: detailAuthPolicy
       responses:
-        '200':
-          $ref: '#/responses/detailAuthPolicy'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/detailAuthPolicy'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     put:
+      tags:
+      - Auth Policy
       summary: Update all fields on an Auth Policy
       description: Update all fields on an Auth Policy by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Auth Policy
       operationId: updateAuthPolicy
-      parameters:
-        - name: authPolicy
-          in: body
-          required: true
-          description: An Auth Policy update object
-          schema:
-            $ref: '#/definitions/authPolicyUpdate'
+      requestBody:
+        description: An Auth Policy update object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/authPolicyUpdate'
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/updateResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-    patch:
-      summary: Update the supplied fields on an Auth Policy
-      description: Update only the supplied fields on an Auth Policy by id. Requires admin access.
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/updateResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
       security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Auth Policy
-      operationId: patchAuthPolicy
-      parameters:
-        - name: authPolicy
-          in: body
-          required: true
-          description: An Auth Policy patch object
-          schema:
-            $ref: '#/definitions/authPolicyPatch'
-      responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/patchResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: authPolicy
     delete:
+      tags:
+      - Auth Policy
       summary: Delete an Auth Policy
       description: |
         Delete an Auth Policy by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Auth Policy
       operationId: deleteAuthPolicy
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/deleteResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listAuthPolicies:
-    description: A list of Auth Policies
-    schema:
-      $ref: '#/definitions/listAuthPoliciesEnvelope'
-  detailAuthPolicy:
-    description: A singular Auth Policy resource
-    schema:
-      $ref: '#/definitions/detailAuthPolicyEnvelope'
-
-definitions:
-  listAuthPoliciesEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/deleteResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    patch:
+      tags:
+      - Auth Policy
+      summary: Update the supplied fields on an Auth Policy
+      description: Update only the supplied fields on an Auth Policy by id. Requires
+        admin access.
+      operationId: patchAuthPolicy
+      requestBody:
+        description: An Auth Policy patch object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/authPolicyPatch'
+        required: true
+      responses:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/patchResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: authPolicy
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
+components:
+  schemas:
+    listAuthPoliciesEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/authPolicyList'
-  detailAuthPolicyEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/authPolicyList'
+    detailAuthPolicyEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/authPolicyDetail'
-  authPolicyList:
-    description: An array of Auth Policies resources
-    type: array
-    items:
-      $ref: '#/definitions/authPolicyDetail'
-  authPolicyPrimary:
-    type: object
-    required:
-      - updb
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/authPolicyDetail'
+    authPolicyList:
+      type: array
+      description: An array of Auth Policies resources
+      items:
+        $ref: '#/components/schemas/authPolicyDetail'
+    authPolicyPrimary:
+      required:
       - cert
       - extJwt
-    properties:
-      updb:
-        $ref: '#/definitions/authPolicyPrimaryUpdb'
-      cert:
-        $ref: '#/definitions/authPolicyPrimaryCert'
-      extJwt:
-        $ref: '#/definitions/authPolicyPrimaryExtJwt'
-  authPolicyPrimaryUpdb:
-    type: object
-    required:
+      - updb
+      type: object
+      properties:
+        updb:
+          $ref: '#/components/schemas/authPolicyPrimaryUpdb'
+        cert:
+          $ref: '#/components/schemas/authPolicyPrimaryCert'
+        extJwt:
+          $ref: '#/components/schemas/authPolicyPrimaryExtJwt'
+    authPolicyPrimaryUpdb:
+      required:
       - allowed
-      - minPasswordLength
-      - requireSpecialChar
-      - requireNumberChar
-      - requireMixedCase
-      - maxAttempts
       - lockoutDurationMinutes
-    properties:
-      allowed:
-        type: boolean
-      minPasswordLength:
-        type: integer
-      requireSpecialChar:
-        type: boolean
-      requireNumberChar:
-        type: boolean
-      requireMixedCase:
-        type: boolean
-      maxAttempts:
-        type: integer
-      lockoutDurationMinutes:
-        type: integer
-  authPolicyPrimaryCert:
-    type: object
-    required:
-      - allowed
+      - maxAttempts
+      - minPasswordLength
+      - requireMixedCase
+      - requireNumberChar
+      - requireSpecialChar
+      type: object
+      properties:
+        allowed:
+          type: boolean
+        minPasswordLength:
+          type: integer
+        requireSpecialChar:
+          type: boolean
+        requireNumberChar:
+          type: boolean
+        requireMixedCase:
+          type: boolean
+        maxAttempts:
+          type: integer
+        lockoutDurationMinutes:
+          type: integer
+    authPolicyPrimaryCert:
+      required:
       - allowExpiredCerts
-    properties:
-      allowed:
-        type: boolean
-      allowExpiredCerts:
-        type: boolean
-  authPolicyPrimaryExtJwt:
-    type: object
-    required:
+      - allowed
+      type: object
+      properties:
+        allowed:
+          type: boolean
+        allowExpiredCerts:
+          type: boolean
+    authPolicyPrimaryExtJwt:
+      required:
       - allowed
       - allowedSigners
-    properties:
-      allowed:
-        type: boolean
-      allowedSigners:
-        type: array
-        items:
-          type: string
-  authPolicySecondary:
-    type: object
-    required:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+        allowedSigners:
+          type: array
+          items:
+            type: string
+    authPolicySecondary:
+      required:
       - requireTotp
-    properties:
-      requireTotp:
-        type: boolean
-      requireExtJwtSigner:
-        type: string
-        x-omit-empty: false
-        x-nullable: true
-
-  authPolicyPrimaryPatch:
-    type: object
-    properties:
-      updb:
-        $ref: '#/definitions/authPolicyPrimaryUpdbPatch'
-      cert:
-        $ref: '#/definitions/authPolicyPrimaryCertPatch'
-      extJwt:
-        $ref: '#/definitions/authPolicyPrimaryExtJwtPatch'
-  authPolicyPrimaryUpdbPatch:
-    type: object
-    x-nullable: true
-    properties:
-      allowed:
-        type: boolean
-        x-nullable: true
-      minPasswordLength:
-        type: integer
-        x-nullable: true
-      requireSpecialChar:
-        type: boolean
-        x-nullable: true
-      requireNumberChar:
-        type: boolean
-        x-nullable: true
-      requireMixedCase:
-        type: boolean
-        x-nullable: true
-      maxAttempts:
-        type: integer
-        x-nullable: true
-      lockoutDurationMinutes:
-        type: integer
-        x-nullable: true
-  authPolicyPrimaryCertPatch:
-    type: object
-    x-nullable: true
-    properties:
-      allowed:
-        type: boolean
-        x-nullable: true
-      allowExpiredCerts:
-        type: boolean
-        x-nullable: true
-  authPolicyPrimaryExtJwtPatch:
-    type: object
-    x-nullable: true
-    properties:
-      allowed:
-        type: boolean
-        x-nullable: true
-      allowedSigners:
-        type: array
-        items:
+      type: object
+      properties:
+        requireTotp:
+          type: boolean
+        requireExtJwtSigner:
           type: string
-        x-nullable: true
-  authPolicySecondaryPatch:
-    type: object
-    x-nullable: true
-    properties:
-      requireTotp:
-        type: boolean
-        x-nullable: true
-      requireExtJwtSigner:
-        type: string
-        x-nullable: true
-
-  authPolicyDetail:
-    description: A Auth Policy resource
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
-          - primary
-          - secondary
+          nullable: true
+          x-omit-empty: false
+    authPolicyPrimaryPatch:
+      type: object
+      properties:
+        updb:
+          $ref: '#/components/schemas/authPolicyPrimaryUpdbPatch'
+        cert:
+          $ref: '#/components/schemas/authPolicyPrimaryCertPatch'
+        extJwt:
+          $ref: '#/components/schemas/authPolicyPrimaryExtJwtPatch'
+    authPolicyPrimaryUpdbPatch:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          nullable: true
+        minPasswordLength:
+          type: integer
+          nullable: true
+        requireSpecialChar:
+          type: boolean
+          nullable: true
+        requireNumberChar:
+          type: boolean
+          nullable: true
+        requireMixedCase:
+          type: boolean
+          nullable: true
+        maxAttempts:
+          type: integer
+          nullable: true
+        lockoutDurationMinutes:
+          type: integer
+          nullable: true
+      nullable: true
+      x-nullable: true
+    authPolicyPrimaryCertPatch:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          nullable: true
+        allowExpiredCerts:
+          type: boolean
+          nullable: true
+      nullable: true
+      x-nullable: true
+    authPolicyPrimaryExtJwtPatch:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          nullable: true
+        allowedSigners:
+          type: array
+          nullable: true
+          items:
+            type: string
+      nullable: true
+      x-nullable: true
+    authPolicySecondaryPatch:
+      type: object
+      properties:
+        requireTotp:
+          type: boolean
+          nullable: true
+        requireExtJwtSigner:
+          type: string
+          nullable: true
+      nullable: true
+      x-nullable: true
+    authPolicyDetail:
+      description: A Auth Policy resource
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - name
+        - primary
+        - secondary
+        type: object
         properties:
           name:
             type: string
           primary:
-            $ref: '#/definitions/authPolicyPrimary'
+            $ref: '#/components/schemas/authPolicyPrimary'
           secondary:
-            $ref: '#/definitions/authPolicySecondary'
-  authPolicyCreate:
-    description: A Auth Policy resource
-    type: object
-    required:
+            $ref: '#/components/schemas/authPolicySecondary'
+    authPolicyCreate:
+      required:
       - name
       - primary
       - secondary
-    properties:
-      name:
-        type: string
-      primary:
-        $ref: '#/definitions/authPolicyPrimary'
-      secondary:
-        $ref: '#/definitions/authPolicySecondary'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  authPolicyUpdate:
-    $ref: '#/definitions/authPolicyCreate'
-  authPolicyPatch:
-    description: A Auth Policy resource
-    type: object
-    properties:
-      name:
-        type: string
-        x-nullable: true
-      primary:
-        $ref: '#/definitions/authPolicyPrimaryPatch'
-      secondary:
-        $ref: '#/definitions/authPolicySecondaryPatch'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
+      type: object
+      properties:
+        name:
+          type: string
+        primary:
+          $ref: '#/components/schemas/authPolicyPrimary'
+        secondary:
+          $ref: '#/components/schemas/authPolicySecondary'
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+      description: A Auth Policy resource
+    authPolicyUpdate:
+      $ref: '#/components/schemas/authPolicyCreate'
+    authPolicyPatch:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        primary:
+          $ref: '#/components/schemas/authPolicyPrimaryPatch'
+        secondary:
+          $ref: '#/components/schemas/authPolicySecondaryPatch'
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+      description: A Auth Policy resource
+  responses:
+    listAuthPolicies:
+      description: A list of Auth Policies
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listAuthPoliciesEnvelope'
+    detailAuthPolicy:
+      description: A singular Auth Policy resource
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailAuthPolicyEnvelope'
+x-original-swagger-version: null

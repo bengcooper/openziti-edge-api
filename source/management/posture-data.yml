@@ -1,84 +1,84 @@
----
-
-definitions:
-  postureDataEnvelope:
-    type: object
-    required:
-      - meta
+openapi: 3.0.1
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    postureDataEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/postureData'
-  postureData:
-    type: object
-    required:
-      - mac
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/postureData'
+    postureData:
+      required:
+      - apiSessionPostureData
       - domain
+      - mac
       - os
       - processes
-      - apiSessionPostureData
-    properties:
-      mac:
-        $ref: '#/definitions/postureDataMac'
-      domain:
-        $ref: '#/definitions/postureDataDomain'
-      os:
-        $ref: '#/definitions/postureDataOs'
-      processes:
-        type: array
-        items:
-          $ref: '#/definitions/postureDataProcess'
-      apiSessionPostureData:
-        type: object
-        additionalProperties:
-          $ref: '#/definitions/apiSessionPostureData'
-  postureDataBase:
-    type: object
-    required:
+      type: object
+      properties:
+        mac:
+          $ref: '#/components/schemas/postureDataMac'
+        domain:
+          $ref: '#/components/schemas/postureDataDomain'
+        os:
+          $ref: '#/components/schemas/postureDataOs'
+        processes:
+          type: array
+          items:
+            $ref: '#/components/schemas/postureDataProcess'
+        apiSessionPostureData:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/apiSessionPostureData'
+    postureDataBase:
+      required:
+      - lastUpdatedAt
       - postureCheckId
       - timedOut
-      - lastUpdatedAt
-    properties:
-      postureCheckId:
-        type: string
-      timedOut:
-        type: boolean
-      lastUpdatedAt:
-        type: string
-        format: date-time
-  postureDataMac:
-    type: object
-    allOf:
-      - $ref: '#/definitions/postureDataBase'
-      - type: object
-        required:
-          - addresses
+      type: object
+      properties:
+        postureCheckId:
+          type: string
+        timedOut:
+          type: boolean
+        lastUpdatedAt:
+          type: string
+          format: date-time
+    postureDataMac:
+      allOf:
+      - $ref: '#/components/schemas/postureDataBase'
+      - required:
+        - addresses
+        type: object
         properties:
           addresses:
             type: array
             items:
               type: string
-  postureDataDomain:
-    type: object
-    allOf:
-      - $ref: '#/definitions/postureDataBase'
-      - type: object
-        required:
-          - domain
+    postureDataDomain:
+      allOf:
+      - $ref: '#/components/schemas/postureDataBase'
+      - required:
+        - domain
+        type: object
         properties:
           domain:
             type: string
-  postureDataOs:
-    type: object
-    allOf:
-      - $ref: '#/definitions/postureDataBase'
-      - type: object
-        required:
-          - type
-          - version
-          - build
+    postureDataOs:
+      allOf:
+      - $ref: '#/components/schemas/postureDataBase'
+      - required:
+        - build
+        - type
+        - version
+        type: object
         properties:
           type:
             type: string
@@ -86,10 +86,9 @@ definitions:
             type: string
           build:
             type: string
-  postureDataProcess:
-    type: object
-    allOf:
-      - $ref: '#/definitions/postureDataBase'
+    postureDataProcess:
+      allOf:
+      - $ref: '#/components/schemas/postureDataBase'
       - type: object
         properties:
           isRunning:
@@ -100,50 +99,51 @@ definitions:
             type: array
             items:
               type: string
-  postureDataMfa:
-    type: object
-    required:
+    postureDataMfa:
+      required:
       - apiSessionId
-      - passedMfa
-      - passedOnWake
-      - passedOnUnlock
       - passedAt
-    properties:
-      apiSessionId:
-        type: string
-      passedAt:
-        type: string
-        format: date-time
-        x-omitempty: false
-      passedMfa:
-        type: boolean
-        x-omitempty: false
-      passedOnWake:
-        type: boolean
-        x-omitempty: false
-      passedOnUnlock:
-        type: boolean
-        x-omitempty: false
-  postureDataEndpointState:
-    type: object
-    required:
-      - wokenAt
+      - passedMfa
+      - passedOnUnlock
+      - passedOnWake
+      type: object
+      properties:
+        apiSessionId:
+          type: string
+        passedAt:
+          type: string
+          format: date-time
+          x-omitempty: false
+        passedMfa:
+          type: boolean
+          x-omitempty: false
+        passedOnWake:
+          type: boolean
+          x-omitempty: false
+        passedOnUnlock:
+          type: boolean
+          x-omitempty: false
+    postureDataEndpointState:
+      required:
       - unlockedAt
-    properties:
-      wokenAt:
-        type: string
-        format: date-time
-      unlockedAt:
-        type: string
-        format: date-time
-  apiSessionPostureData:
-    type: object
-    required:
+      - wokenAt
+      type: object
+      properties:
+        wokenAt:
+          type: string
+          format: date-time
+        unlockedAt:
+          type: string
+          format: date-time
+    apiSessionPostureData:
+      required:
       - mfa
-    properties:
-      mfa:
-        $ref: '#/definitions/postureDataMfa'
-      endpointState:
-        $ref: '#/definitions/postureDataEndpointState'
-      sdkInfo:
-        $ref: '../shared/authenticate.yml#/definitions/sdkInfo'
+      type: object
+      properties:
+        mfa:
+          $ref: '#/components/schemas/postureDataMfa'
+        endpointState:
+          $ref: '#/components/schemas/postureDataEndpointState'
+        sdkInfo:
+          $ref: ../shared/authenticate.yml#/definitions/sdkInfo
+x-original-swagger-version: null

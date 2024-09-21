@@ -1,203 +1,209 @@
----
-
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   current-identity-authenticators:
     get:
-      summary: List authenticators for the current identity
-      description: Retrieves a list of authenticators assigned to the current API session's identity; supports filtering, sorting, and pagination.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
       tags:
-        - Current API Session
+      - Current API Session
+      summary: List authenticators for the current identity
+      description: "Retrieves a list of authenticators assigned to the current API\
+        \ session's identity; supports filtering, sorting, and pagination."
       operationId: listCurrentIdentityAuthenticators
       parameters:
-        - $ref: 'parameters.yml#/limit'
-        - $ref: 'parameters.yml#/offset'
-        - $ref: 'parameters.yml#/filter'
+      - $ref: parameters.yml#/limit
+      - $ref: parameters.yml#/offset
+      - $ref: parameters.yml#/filter
       responses:
-        '200':
-          $ref: 'authenticators.yml#/responses/listAuthenticators'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-  current-identity-authenticators-id:
-    parameters:
-      - $ref: 'parameters.yml#/id'
-    get:
-      summary: Retrieve an authenticator for the current identity
-      description: Retrieves a single authenticator by id. Will only show authenticators assigned to the API session's identity.
+        "200":
+          $ref: authenticators.yml#/responses/listAuthenticators
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
       security:
-        - ztSession: []
-        - oauth2: [openid]
+      - ztSession: []
+      - oauth2:
+        - openid
+  current-identity-authenticators-id:
+    get:
       tags:
-        - Current API Session
+      - Current API Session
+      summary: Retrieve an authenticator for the current identity
+      description: Retrieves a single authenticator by id. Will only show authenticators
+        assigned to the API session's identity.
       operationId: detailCurrentIdentityAuthenticator
       responses:
-        '200':
-          $ref: 'authenticators.yml#/responses/detailAuthenticator'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
+        "200":
+          $ref: authenticators.yml#/responses/detailAuthenticator
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     put:
+      tags:
+      - Current API Session
       summary: Update all fields on an authenticator of this identity
       description: |
         Update all fields on an authenticator by id.  Will only update authenticators assigned to the API session's
         identity.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
-      tags:
-        - Current API Session
       operationId: updateCurrentIdentityAuthenticator
-      parameters:
-        - name: authenticator
-          in: body
-          required: true
-          description: 'An authenticator put object'
-          schema:
-            $ref: 'authenticators.yml#/definitions/authenticatorUpdateWithCurrent'
+      requestBody:
+        description: An authenticator put object
+        content:
+          '*/*':
+            schema:
+              $ref: authenticators.yml#/definitions/authenticatorUpdateWithCurrent
+        required: true
       responses:
-        '200':
-          $ref: 'standard-responses.yml#/responses/updateResponse'
-        '400':
-          $ref: 'standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
+        "200":
+          $ref: standard-responses.yml#/responses/updateResponse
+        "400":
+          $ref: standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: authenticator
     patch:
+      tags:
+      - Current API Session
       summary: Update the supplied fields on an authenticator of this identity
       description: |
         Update the supplied fields on an authenticator by id. Will only update authenticators assigned to the API
         session's identity.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
-      tags:
-        - Current API Session
       operationId: patchCurrentIdentityAuthenticator
-      parameters:
-        - name: authenticator
-          in: body
-          required: true
-          description: An authenticator patch object
-          schema:
-            $ref: 'authenticators.yml#/definitions/authenticatorPatchWithCurrent'
+      requestBody:
+        description: An authenticator patch object
+        content:
+          '*/*':
+            schema:
+              $ref: authenticators.yml#/definitions/authenticatorPatchWithCurrent
+        required: true
       responses:
-        '200':
-          $ref: 'standard-responses.yml#/responses/patchResponse'
-        '400':
-          $ref: 'standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
+        "200":
+          $ref: standard-responses.yml#/responses/patchResponse
+        "400":
+          $ref: standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: authenticator
+    parameters:
+    - $ref: parameters.yml#/id
   current-identity-authenticators-id-extend:
-    parameters:
-      - $ref: 'parameters.yml#/id'
     post:
-      summary: Allows the current identity to recieve a new certificate associated with a certificate based authenticator
-      description: >-
-        This endpoint only functions for certificates issued by the controller. 3rd party
-        certificates are not handled.
-        
-        Allows an identity to extend its certificate's expiration date by
-        using its current and valid client certificate to submit a CSR. This CSR may
-        be passed in using a new private key, thus allowing private key rotation.
-
-        The response from this endpoint is a new client certificate which the client must 
-        be verified via the /authenticators/{id}/extend-verify endpoint.
-        
-        After verification is completion any new connections must be made with new certificate.
-        Prior to verification the old client certificate remains active.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
+      tags:
+      - Current API Session
+      - Enroll
+      - Extend Enrollment
+      summary: Allows the current identity to recieve a new certificate associated
+        with a certificate based authenticator
+      description: |-
+        This endpoint only functions for certificates issued by the controller. 3rd party certificates are not handled.
+        Allows an identity to extend its certificate's expiration date by using its current and valid client certificate to submit a CSR. This CSR may be passed in using a new private key, thus allowing private key rotation.
+        The response from this endpoint is a new client certificate which the client must  be verified via the /authenticators/{id}/extend-verify endpoint.
+        After verification is completion any new connections must be made with new certificate. Prior to verification the old client certificate remains active.
       operationId: extendCurrentIdentityAuthenticator
-      parameters:
-        - name: extend
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/identityExtendEnrollmentRequest'
-      tags:
-        - Current API Session
-        - Enroll
-        - Extend Enrollment
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/identityExtendEnrollmentRequest'
+        required: true
       responses:
-        '200':
-          $ref: '#/responses/identityExtendEnrollmentResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-
-  current-identity-authenticators-id-extend-verify:
-    parameters:
-      - $ref: 'parameters.yml#/id'
-    post:
-      summary: Allows the current identity to validate reciept of a new client certificate
-      description: >-
-        After submitting a CSR for a new client certificate the resulting public certificate
-        must be re-submitted to this endpoint to verify receipt.
-        
-        After receipt, the new client certificate must be used for new authentication requests.
+        "200":
+          $ref: '#/components/responses/identityExtendEnrollmentResponse'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
       security:
-        - ztSession: []
-        - oauth2: [openid]
-      operationId: extendVerifyCurrentIdentityAuthenticator
-      parameters:
-        - name: extend
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/identityExtendValidateEnrollmentRequest'
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: extend
+    parameters:
+    - $ref: parameters.yml#/id
+  current-identity-authenticators-id-extend-verify:
+    post:
       tags:
-        - Current API Session
-        - Enroll
-        - Extend Enrollment
+      - Current API Session
+      - Enroll
+      - Extend Enrollment
+      summary: Allows the current identity to validate reciept of a new client certificate
+      description: |-
+        After submitting a CSR for a new client certificate the resulting public certificate must be re-submitted to this endpoint to verify receipt.
+        After receipt, the new client certificate must be used for new authentication requests.
+      operationId: extendVerifyCurrentIdentityAuthenticator
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/identityExtendValidateEnrollmentRequest'
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/emptyResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-
-responses:
-  identityExtendEnrollmentResponse:
-    description: A response containg the identity's new certificate
-    schema:
-      $ref: '#/definitions/identityExtendEnrollmentEnvelope'
-
-definitions:
-  identityExtendValidateEnrollmentRequest:
-    type: object
-    required:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/emptyResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: extend
+    parameters:
+    - $ref: parameters.yml#/id
+components:
+  schemas:
+    identityExtendValidateEnrollmentRequest:
+      required:
       - clientCert
-    properties:
-      clientCert:
-        type: string
-        description: A PEM encoded client certificate previously returned after an extension request
-  identityExtendEnrollmentRequest:
-    type: object
-    required:
+      type: object
+      properties:
+        clientCert:
+          type: string
+          description: A PEM encoded client certificate previously returned after
+            an extension request
+    identityExtendEnrollmentRequest:
+      required:
       - clientCertCsr
-    properties:
-      clientCertCsr:
-        type: string
-  identityExtendEnrollmentEnvelope:
-    type: object
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/identityExtendCerts'
-  identityExtendCerts:
-    type: object
-    properties:
-      clientCert:
-        type: string
-        description: A PEM encoded client certificate
-      ca:
-        type: string
-        description: A PEM encoded set of CA certificates
+      type: object
+      properties:
+        clientCertCsr:
+          type: string
+    identityExtendEnrollmentEnvelope:
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/identityExtendCerts'
+    identityExtendCerts:
+      type: object
+      properties:
+        clientCert:
+          type: string
+          description: A PEM encoded client certificate
+        ca:
+          type: string
+          description: A PEM encoded set of CA certificates
+  responses:
+    identityExtendEnrollmentResponse:
+      description: A response containg the identity's new certificate
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/identityExtendEnrollmentEnvelope'
+x-original-swagger-version: null

@@ -1,354 +1,351 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
-  # 'transit-routers' is deprecated, remove after 19.x, use 'routers' instead
   transit-routers:
     get:
+      tags:
+      - Router
       summary: List routers
       description: |
         Retrieves a list of router resources; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: listTransitRouters
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listRouters'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listRouters'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     post:
+      tags:
+      - Router
       summary: Create a router resource
       description: Create a router resource. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: createTransitRouter
-      parameters:
-        - name: router
-          in: body
-          required: true
-          description: A router to create
-          schema:
-            $ref: '#/definitions/routerCreate'
+      requestBody:
+        description: A router to create
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/routerCreate'
+        required: true
       responses:
-        '201':
-          $ref: '../shared/standard-responses.yml#/responses/createResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "201":
+          $ref: ../shared/standard-responses.yml#/responses/createResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: router
   transit-routers-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - Router
       summary: Retrieves a single router
       description: Retrieves a single router by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: detailTransitRouter
       responses:
-        '200':
-          $ref: '#/responses/detailRouter'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/detailRouter'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     put:
+      tags:
+      - Router
       summary: Update all fields on a router
       description: Update all fields on a router by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: updateTransitRouter
-      parameters:
-        - name: router
-          in: body
-          required: true
-          description: A router update object
-          schema:
-            $ref: '#/definitions/routerUpdate'
+      requestBody:
+        description: A router update object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/routerUpdate'
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/updateResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-    patch:
-      summary: Update the supplied fields on a router
-      description: Update the supplied fields on a router. Requires admin access.
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/updateResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
       security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
-      operationId: patchTransitRouter
-      parameters:
-        - name: router
-          in: body
-          required: true
-          description: A router patch object
-          schema:
-            $ref: '#/definitions/routerPatch'
-      responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/patchResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: router
     delete:
+      tags:
+      - Router
       summary: Delete a router
       description: Delete a router by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: deleteTransitRouter
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/deleteResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '409':
-          $ref: '../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/deleteResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "409":
+          $ref: ../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    patch:
+      tags:
+      - Router
+      summary: Update the supplied fields on a router
+      description: Update the supplied fields on a router. Requires admin access.
+      operationId: patchTransitRouter
+      requestBody:
+        description: A router patch object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/routerPatch'
+        required: true
+      responses:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/patchResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: router
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
   routers:
     get:
+      tags:
+      - Router
       summary: List routers
       description: |
         Retrieves a list of router resources; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: listRouters
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listRouters'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listRouters'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     post:
+      tags:
+      - Router
       summary: Create a router resource
       description: Create a router resource. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: createRouter
-      parameters:
-        - name: router
-          in: body
-          required: true
-          description: A router to create
-          schema:
-            $ref: '#/definitions/routerCreate'
+      requestBody:
+        description: A router to create
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/routerCreate'
+        required: true
       responses:
-        '201':
-          $ref: '../shared/standard-responses.yml#/responses/createResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "201":
+          $ref: ../shared/standard-responses.yml#/responses/createResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: router
   routers-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - Router
       summary: Retrieves a single router
       description: Retrieves a single router by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: detailRouter
       responses:
-        '200':
-          $ref: '#/responses/detailRouter'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/detailRouter'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     put:
+      tags:
+      - Router
       summary: Update all fields on a router
       description: Update all fields on a router by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: updateRouter
-      parameters:
-        - name: router
-          in: body
-          required: true
-          description: A router update object
-          schema:
-            $ref: '#/definitions/routerUpdate'
+      requestBody:
+        description: A router update object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/routerUpdate'
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/updateResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-    patch:
-      summary: Update the supplied fields on a router
-      description: Update the supplied fields on a router. Requires admin access.
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/updateResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
       security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
-      operationId: patchRouter
-      parameters:
-        - name: router
-          in: body
-          required: true
-          description: A router patch object
-          schema:
-            $ref: '#/definitions/routerPatch'
-      responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/patchResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: router
     delete:
+      tags:
+      - Router
       summary: Delete a router
       description: Delete a router by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Router
       operationId: deleteRouter
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/deleteResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '409':
-          $ref: '../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listRouters:
-    description: A list of specifications
-    schema:
-      $ref: '#/definitions/listRoutersEnvelope'
-  detailRouter:
-    description: A single router
-    schema:
-      $ref: '#/definitions/detailRouterEnvelope'
-
-definitions:
-  listRoutersEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/deleteResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "409":
+          $ref: ../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    patch:
+      tags:
+      - Router
+      summary: Update the supplied fields on a router
+      description: Update the supplied fields on a router. Requires admin access.
+      operationId: patchRouter
+      requestBody:
+        description: A router patch object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/routerPatch'
+        required: true
+      responses:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/patchResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: router
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
+components:
+  schemas:
+    listRoutersEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/routerList'
-  detailRouterEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/routerList'
+    detailRouterEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/routerDetail'
-  routerList:
-    type: array
-    items:
-      $ref: '#/definitions/routerDetail'
-  routerDetail:
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
-          - isVerified
-          - isOnline
-          - fingerprint
-          - cost
-          - noTraversal
-          - disabled
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/routerDetail'
+    routerList:
+      type: array
+      items:
+        $ref: '#/components/schemas/routerDetail'
+    routerDetail:
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - cost
+        - disabled
+        - fingerprint
+        - isOnline
+        - isVerified
+        - name
+        - noTraversal
+        type: object
         properties:
           name:
             type: string
@@ -360,89 +357,103 @@ definitions:
             type: boolean
           enrollmentToken:
             type: string
-            x-nullable: true
+            nullable: true
           enrollmentJwt:
             type: string
-            x-nullable: true
+            nullable: true
           enrollmentCreatedAt:
             type: string
             format: date-time
-            x-nullable: true
+            nullable: true
           enrollmentExpiresAt:
             type: string
             format: date-time
-            x-nullable: true
+            nullable: true
           unverifiedFingerprint:
             type: string
-            x-nullable: true
+            nullable: true
             x-omitempty: false
           unverifiedCertPem:
             type: string
-            x-nullable: true
+            nullable: true
             x-omitempty: false
           cost:
-            type: integer
-            minimum: 0
             maximum: 65535
+            minimum: 0
+            type: integer
           noTraversal:
             type: boolean
           disabled:
             type: boolean
-  routerCreate:
-    type: object
-    required:
+    routerCreate:
+      required:
       - name
-    properties:
-      name:
-        type: string
-      cost:
-        type: integer
-        x-nullable: true
-        minimum: 0
-        maximum: 65535
-      noTraversal:
-        type: boolean
-        x-nullable: true
-      disabled:
-        type: boolean
-        x-nullable: true
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  routerUpdate:
-    type: object
-    required:
+      type: object
+      properties:
+        name:
+          type: string
+        cost:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          nullable: true
+        noTraversal:
+          type: boolean
+          nullable: true
+        disabled:
+          type: boolean
+          nullable: true
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+    routerUpdate:
+      required:
       - name
-    properties:
-      name:
-        type: string
-      cost:
-        type: integer
-        x-nullable: true
-        minimum: 0
-        maximum: 65535
-      noTraversal:
-        type: boolean
-        x-nullable: true
-      disabled:
-        type: boolean
-        x-nullable: true
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  routerPatch:
-    type: object
-    properties:
-      name:
-        type: string
-      cost:
-        type: integer
-        x-nullable: true
-        minimum: 0
-        maximum: 65535
-      noTraversal:
-        type: boolean
-        x-nullable: true
-      disabled:
-        type: boolean
-        x-nullable: true
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
+      type: object
+      properties:
+        name:
+          type: string
+        cost:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          nullable: true
+        noTraversal:
+          type: boolean
+          nullable: true
+        disabled:
+          type: boolean
+          nullable: true
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+    routerPatch:
+      type: object
+      properties:
+        name:
+          type: string
+        cost:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          nullable: true
+        noTraversal:
+          type: boolean
+          nullable: true
+        disabled:
+          type: boolean
+          nullable: true
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+  responses:
+    listRouters:
+      description: A list of specifications
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listRoutersEnvelope'
+    detailRouter:
+      description: A single router
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailRouterEnvelope'
+x-original-swagger-version: null

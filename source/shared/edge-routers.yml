@@ -1,45 +1,50 @@
----
-definitions:
-  serviceEdgeRouters:
-    type: object
-    properties:
+openapi: 3.0.1
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    serviceEdgeRouters:
+      type: object
+      properties:
         edgeRouters:
           type: array
           items:
-            $ref: '#/definitions/commonEdgeRouterProperties'
-  commonEdgeRouterProperties:
-    type: object
-    required:
+            $ref: '#/components/schemas/commonEdgeRouterProperties'
+    commonEdgeRouterProperties:
+      required:
+      - cost
+      - disabled
       - hostname
+      - isOnline
       - name
+      - noTraversal
       - supportedProtocols
       - syncStatus
-      - isOnline
-      - cost
-      - noTraversal
-      - disabled
-    properties:
-      hostname:
-        type: string
-      name:
-        type: string
-      supportedProtocols:
-        additionalProperties:
+      type: object
+      properties:
+        hostname:
           type: string
-        type: object
-      syncStatus:
-        type: string
-      isOnline:
-        type: boolean
-      cost:
-        type: integer
-        minimum: 0
-        maximum: 65535
-        x-nullable: true
-      noTraversal:
-        type: boolean
-        x-nullable: true
-      disabled:
-        type: boolean
-      appData:
-        $ref: 'base-entity.yml#/definitions/tags'
+        name:
+          type: string
+        supportedProtocols:
+          type: object
+          additionalProperties:
+            type: string
+        syncStatus:
+          type: string
+        isOnline:
+          type: boolean
+        cost:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          nullable: true
+        noTraversal:
+          type: boolean
+          nullable: true
+        disabled:
+          type: boolean
+        appData:
+          $ref: base-entity.yml#/definitions/tags
+x-original-swagger-version: null

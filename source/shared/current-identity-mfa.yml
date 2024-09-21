@@ -1,276 +1,283 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   current-identity-mfa:
-    post:
-      summary: Initiate MFA enrollment
-      description: >
-        Allows authenticator based MFA enrollment. If enrollment has already been completed, it must be
-        disabled before attempting to re-enroll. Subsequent enrollment request is completed via
-        `POST /current-identity/mfa/verify`
-      security:
-        - ztSession: []
-        - oauth2: [openid]
-      tags:
-        - Current Identity
-        - MFA
-      operationId: enrollMfa
-      responses:
-        '201':
-          $ref: 'standard-responses.yml#/responses/createResponse'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
-        '409':
-          $ref: '#/responses/alreadyMfaEnrolledResponse'
     get:
-      summary: Returns the current status of MFA enrollment
-      description: >
-        Returns details about the current MFA enrollment. If enrollment has not been completed it will
-        return the current MFA configuration details necessary to complete a `POST /current-identity/mfa/verify`.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
       tags:
-        - Current Identity
-        - MFA
+      - Current Identity
+      - MFA
+      summary: Returns the current status of MFA enrollment
+      description: |
+        Returns details about the current MFA enrollment. If enrollment has not been completed it will return the current MFA configuration details necessary to complete a `POST /current-identity/mfa/verify`.
       operationId: detailMfa
       responses:
-        '200':
-          $ref: '#/responses/detailMfa'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
-    delete:
-      summary: Disable MFA for the current identity
-      description: >
-        Disable MFA for the current identity. Requires a current valid time based one time password if MFA enrollment
-        has been completed. If not, code should be an empty string. If one time passwords are not available and admin
-        account can be used to remove MFA from the identity via `DELETE /identities/<id>/mfa`.
+        "200":
+          $ref: '#/components/responses/detailMfa'
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
       security:
-        - ztSession: []
-        - oauth2: [openid]
+      - ztSession: []
+      - oauth2:
+        - openid
+    post:
       tags:
-        - Current Identity
-        - MFA
+      - Current Identity
+      - MFA
+      summary: Initiate MFA enrollment
+      description: |
+        Allows authenticator based MFA enrollment. If enrollment has already been completed, it must be disabled before attempting to re-enroll. Subsequent enrollment request is completed via `POST /current-identity/mfa/verify`
+      operationId: enrollMfa
+      responses:
+        "201":
+          $ref: standard-responses.yml#/responses/createResponse
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+        "409":
+          $ref: '#/components/responses/alreadyMfaEnrolledResponse'
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    delete:
+      tags:
+      - Current Identity
+      - MFA
+      summary: Disable MFA for the current identity
+      description: |
+        Disable MFA for the current identity. Requires a current valid time based one time password if MFA enrollment has been completed. If not, code should be an empty string. If one time passwords are not available and admin account can be used to remove MFA from the identity via `DELETE /identities/<id>/mfa`.
       operationId: deleteMfa
       parameters:
-        - name: mfa-validation-code
-          in: header
-          required: false
+      - name: mfa-validation-code
+        in: header
+        schema:
           type: string
       responses:
-        '200':
-          $ref: 'standard-responses.yml#/responses/emptyResponse'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
+        "200":
+          $ref: standard-responses.yml#/responses/emptyResponse
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
   current-identity-mfa-qr-code:
     get:
-      summary: Show a QR code for unverified MFA enrollments
-      description: >
-        Shows an QR code image for unverified MFA enrollments. 404s if the MFA enrollment has been completed or
-        not started.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
       tags:
-        - Current Identity
-        - MFA
+      - Current Identity
+      - MFA
+      summary: Show a QR code for unverified MFA enrollments
+      description: |
+        Shows an QR code image for unverified MFA enrollments. 404s if the MFA enrollment has been completed or not started.
       operationId: detailMfaQrCode
-      produces:
-        - image/png
-        - application/json
       responses:
-        200:
+        "200":
           description: OK
-        404:
+          content: {}
+        "404":
           description: No MFA enrollment or MFA enrollment is completed
+          content: {}
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
   current-identity-mfa-verify:
     post:
-      summary: Complete MFA enrollment by verifying a time based one time token
-      description: >
-        Completes MFA enrollment by accepting a time based one time password as verification. Called
-        after MFA enrollment has been initiated via `POST /current-identity/mfa`.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
       tags:
-        - Current Identity
-        - MFA
+      - Current Identity
+      - MFA
+      summary: Complete MFA enrollment by verifying a time based one time token
+      description: |
+        Completes MFA enrollment by accepting a time based one time password as verification. Called after MFA enrollment has been initiated via `POST /current-identity/mfa`.
       operationId: verifyMfa
-      parameters:
-        - name: mfaValidation
-          in: body
-          required: true
-          description: 'An MFA validation request'
-          schema:
-            $ref: 'authenticate.yml#/definitions/mfaCode'
+      requestBody:
+        description: An MFA validation request
+        content:
+          '*/*':
+            schema:
+              $ref: authenticate.yml#/definitions/mfaCode
+        required: true
       responses:
-        '200':
-          $ref: 'standard-responses.yml#/responses/emptyResponse'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
+        "200":
+          $ref: standard-responses.yml#/responses/emptyResponse
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: mfaValidation
   current-identity-mfa-recovery-codes:
     get:
-      summary: For a completed MFA enrollment view the current recovery codes
-      description: >
-        Allows the viewing of recovery codes of an MFA enrollment. Requires a current valid
-        time based one time password to interact with. Available after a completed MFA enrollment.
-      security:
-        - ztSession: []
-        - oauth2: [openid]
       tags:
-        - Current Identity
-        - MFA
+      - Current Identity
+      - MFA
+      summary: For a completed MFA enrollment view the current recovery codes
+      description: |
+        Allows the viewing of recovery codes of an MFA enrollment. Requires a current valid time based one time password to interact with. Available after a completed MFA enrollment.
       operationId: detailMfaRecoveryCodes
       parameters:
-        - name: mfaValidation
-          in: body
-          required: false
-          description: 'An MFA validation request'
-          schema:
-            $ref: 'authenticate.yml#/definitions/mfaCode'
-        - name: mfa-validation-code
-          in: header
-          required: false
+      - name: mfa-validation-code
+        in: header
+        schema:
           type: string
+      requestBody:
+        description: An MFA validation request
+        content:
+          '*/*':
+            schema:
+              $ref: authenticate.yml#/definitions/mfaCode
+        required: false
       responses:
-        '200':
-          $ref: '#/responses/detailMfaRecoveryCodes'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
-    post:
-      summary: For a completed MFA enrollment regenerate the recovery codes
-      description: >
-        Allows regeneration of recovery codes of an MFA enrollment. Requires a current valid
-        time based one time password to interact with. Available after a completed MFA enrollment. This replaces
-        all existing recovery codes.
+        "200":
+          $ref: '#/components/responses/detailMfaRecoveryCodes'
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
       security:
-        - ztSession: []
-        - oauth2: [openid]
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: mfaValidation
+    post:
       tags:
-        - Current Identity
-        - MFA
+      - Current Identity
+      - MFA
+      summary: For a completed MFA enrollment regenerate the recovery codes
+      description: |
+        Allows regeneration of recovery codes of an MFA enrollment. Requires a current valid time based one time password to interact with. Available after a completed MFA enrollment. This replaces all existing recovery codes.
       operationId: createMfaRecoveryCodes
-      parameters:
-        - name: mfaValidation
-          in: body
-          required: true
-          description: 'An MFA validation request'
-          schema:
-            $ref: 'authenticate.yml#/definitions/mfaCode'
+      requestBody:
+        description: An MFA validation request
+        content:
+          '*/*':
+            schema:
+              $ref: authenticate.yml#/definitions/mfaCode
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/emptyResponse'
-        '401':
-          $ref: 'standard-responses.yml#/responses/unauthorizedResponse'
-        '404':
-          $ref: 'standard-responses.yml#/responses/notFoundResponse'
-
-responses:
-  alreadyMfaEnrolledResponse:
-    description: The identity is already enrolled in MFA
-    schema:
-      $ref: 'standard-responses.yml#/definitions/apiErrorEnvelope'
-    examples:
-      'application/json':
-        error:
-          args:
-          cause:
-          causeMessage: ''
-          code: ALREADY_MFA_ENROLLED
-          message: The identity is already enrolled in MFA
-          requestId: 270908d6-f2ef-4577-b973-67bec18ae376
-        meta:
-          apiEnrollmentVersion: 0.0.1
-          apiVersion: 0.0.1
-  mfaCreatedResponse:
-    description: The create request was succesful and the response contains the location and details to complete MFA enrollment
-    schema:
-      $ref: '#/definitions/mfaCreatedEnvelope'
-
-  detailMfa:
-    description: The details of an MFA enrollment
-    schema:
-      $ref: '#/definitions/detailMfaEnvelope'
-
-  detailMfaRecoveryCodes:
-    description: The recovery codes of an MFA enrollment
-    schema:
-      $ref: '#/definitions/detailMfaRecoveryCodesEnvelope'
-
-definitions:
-  mfaFormats:
-    type: string
-    enum:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/emptyResponse
+        "401":
+          $ref: standard-responses.yml#/responses/unauthorizedResponse
+        "404":
+          $ref: standard-responses.yml#/responses/notFoundResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: mfaValidation
+components:
+  schemas:
+    mfaFormats:
+      type: string
+      enum:
       - numeric
       - alpha
       - alphaNumeric
-  mfaProviders:
-    type: string
-    enum:
+    mfaProviders:
+      type: string
+      enum:
       - ziti
       - url
-  mfaCreatedEnvelope:
-    type: object
-    required:
-      - meta
+    mfaCreatedEnvelope:
+      required:
       - error
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      error:
-        $ref: '#/definitions/apiError'
-  detailMfaEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        error:
+          $ref: '#/components/schemas/apiError'
+    detailMfaEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/detailMfa'
-  detailMfa:
-    type: object
-    allOf:
-      - $ref: 'base-entity.yml#/definitions/baseEntity'
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/detailMfa'
+    detailMfa:
+      allOf:
+      - $ref: base-entity.yml#/definitions/baseEntity
       - required:
-          - isVerified
+        - isVerified
+        type: object
         properties:
           isVerified:
             type: boolean
           recoveryCodes:
             type: array
+            description: Not provided if MFA verification has been completed
             items:
               type: string
-            description: Not provided if MFA verification has been completed
           provisioningUrl:
             type: string
             description: Not provided if MFA verification has been completed
-  detailMfaRecoveryCodesEnvelope:
-    type: object
-    required:
-      - meta
+    detailMfaRecoveryCodesEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: 'standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/detailMfaRecoveryCodes'
-  detailMfaRecoveryCodes:
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/detailMfaRecoveryCodes'
+    detailMfaRecoveryCodes:
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
       - required:
-          - recoveryCodes
+        - recoveryCodes
+        type: object
         properties:
           recoveryCodes:
             type: array
             items:
               type: string
+  responses:
+    alreadyMfaEnrolledResponse:
+      description: The identity is already enrolled in MFA
+      content:
+        '*/*':
+          schema:
+            $ref: standard-responses.yml#/definitions/apiErrorEnvelope
+        application/json:
+          example:
+            error:
+              causeMessage: ""
+              code: ALREADY_MFA_ENROLLED
+              message: The identity is already enrolled in MFA
+              requestId: 270908d6-f2ef-4577-b973-67bec18ae376
+            meta:
+              apiEnrollmentVersion: 0.0.1
+              apiVersion: 0.0.1
+    mfaCreatedResponse:
+      description: The create request was succesful and the response contains the
+        location and details to complete MFA enrollment
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/mfaCreatedEnvelope'
+    detailMfa:
+      description: The details of an MFA enrollment
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailMfaEnvelope'
+    detailMfaRecoveryCodes:
+      description: The recovery codes of an MFA enrollment
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailMfaRecoveryCodesEnvelope'
+x-original-swagger-version: null

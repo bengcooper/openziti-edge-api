@@ -1,41 +1,47 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   summary:
     get:
-      summary: Returns a list of accessible resource counts
-      description: This endpoint is usefull for UIs that wish to display UI elements with counts.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
       tags:
-        - Informational
+      - Informational
+      summary: Returns a list of accessible resource counts
+      description: This endpoint is usefull for UIs that wish to display UI elements
+        with counts.
       operationId: listSummary
       responses:
-        '200':
-          $ref: '#/responses/listSummaryCounts'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listSummaryCounts:
-    description: Entity counts scopped to the current identitie's access
-    schema:
-      $ref: '#/definitions/listSummaryCountsEnvelope'
-
-definitions:
-  listSummaryCountsEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/listSummaryCounts'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+components:
+  schemas:
+    listSummaryCountsEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/listSummaryCounts'
-  listSummaryCounts:
-    type: object
-    additionalProperties:
-      type: integer
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/listSummaryCounts'
+    listSummaryCounts:
+      type: object
+      additionalProperties:
+        type: integer
+  responses:
+    listSummaryCounts:
+      description: Entity counts scopped to the current identitie's access
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listSummaryCountsEnvelope'
+x-original-swagger-version: null

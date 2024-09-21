@@ -1,303 +1,317 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   configs:
     get:
+      tags:
+      - Config
       summary: List configs
       description: |
         Retrieves a list of config resources; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Config
       operationId: listConfigs
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listConfigs'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listConfigs'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     post:
+      tags:
+      - Config
       summary: Create a config resource
       description: Create a config resource. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Config
       operationId: createConfig
-      parameters:
-        - name: config
-          in: body
-          required: true
-          description: A config to create
-          schema:
-            $ref: '#/definitions/configCreate'
+      requestBody:
+        description: A config to create
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/configCreate'
+        required: true
       responses:
-        '201':
-          $ref: '../shared/standard-responses.yml#/responses/createResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "201":
+          $ref: ../shared/standard-responses.yml#/responses/createResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: config
   configs-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - Config
       summary: Retrieves a single config
       description: Retrieves a single config by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Config
       operationId: detailConfig
       responses:
-        '200':
-          $ref: '#/responses/detailConfig'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/detailConfig'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     put:
+      tags:
+      - Config
       summary: Update all fields on a config
       description: Update all fields on a config by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Config
       operationId: updateConfig
-      parameters:
-        - name: config
-          in: body
-          required: true
-          description: A config update object
-          schema:
-            $ref: '#/definitions/configUpdate'
+      requestBody:
+        description: A config update object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/configUpdate'
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/updateResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-    patch:
-      summary: Update the supplied fields on a config
-      description: Update the supplied fields on a config. Requires admin access.
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/updateResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
       security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Config
-      operationId: patchConfig
-      parameters:
-        - name: config
-          in: body
-          required: true
-          description: A config patch object
-          schema:
-            $ref: '#/definitions/configPatch'
-      responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/patchResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: config
     delete:
+      tags:
+      - Config
       summary: Delete a config
       description: Delete a config by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Config
       operationId: deleteConfig
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/deleteResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '409':
-          $ref: '../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-  configs-id-services:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/deleteResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "409":
+          $ref: ../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    patch:
+      tags:
+      - Config
+      summary: Update the supplied fields on a config
+      description: Update the supplied fields on a config. Requires admin access.
+      operationId: patchConfig
+      requestBody:
+        description: A config patch object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/configPatch'
+        required: true
+      responses:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/patchResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: config
     parameters:
-      - $ref: '../shared/parameters.yml#/id'
+    - $ref: ../shared/parameters.yml#/id
+  configs-id-services:
     get:
+      tags:
+      - Config
       summary: List services referenced by a config
       description: |
         Retrieves a list of service resources that reference a given config; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Config
       operationId: listConfigServices
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '../shared/services.yml#/responses/listServices'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listConfigs:
-    description: A list of configs
-    schema:
-      $ref: '#/definitions/listConfigsEnvelope'
-  detailConfig:
-    description: A singular config resource
-    schema:
-      $ref: '#/definitions/detailConfigEnvelope'
-
-definitions:
-  listConfigsEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: ../shared/services.yml#/responses/listServices
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
+components:
+  schemas:
+    listConfigsEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/configList'
-  detailConfigEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/configList'
+    detailConfigEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/configDetail'
-  configList:
-    description: An array of config resources
-    type: array
-    items:
-      $ref: '#/definitions/configDetail'
-  configDetail:
-    description: A config resource
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - name
-          - configTypeId
-          - configType
-          - data
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/configDetail'
+    configList:
+      type: array
+      description: An array of config resources
+      items:
+        $ref: '#/components/schemas/configDetail'
+    configDetail:
+      description: A config resource
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - configType
+        - configTypeId
+        - data
+        - name
+        type: object
         properties:
           name:
             type: string
           configTypeId:
             type: string
           configType:
-            $ref: '../shared/base-entity.yml#/definitions/entityRef'
+            $ref: ../shared/base-entity.yml#/definitions/entityRef
           data:
             type: object
-            description: The data section of a config is based on the schema of its type
-  configCreate:
-    type: object
-    description: A config create object
-    required:
-      - name
+            properties: {}
+            description: The data section of a config is based on the schema of its
+              type
+    configCreate:
+      required:
       - configTypeId
       - data
-    properties:
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-      name:
-        type: string
-        example: default.ziti-tunneler-server.v1
-      configTypeId:
-        type: string
-        description: The id of a config-type that the data section will match
-      data:
-        type: object
-        x-nullable: false
-        additionalProperties: true
-        description: Data payload is defined by the schema of the config-type defined in the type parameter
-    example:
-      name: test-config
-      configTypeId: cea49285-6c07-42cf-9f52-09a9b115c783
-      data:
-        hostname: example.com
-        port: 80
-  configUpdate:
-    type: object
-    description: A config update object
-    required:
       - name
+      type: object
+      properties:
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+        name:
+          type: string
+          example: default.ziti-tunneler-server.v1
+        configTypeId:
+          type: string
+          description: The id of a config-type that the data section will match
+        data:
+          type: object
+          additionalProperties: true
+          description: Data payload is defined by the schema of the config-type defined
+            in the type parameter
+          nullable: false
+      description: A config create object
+      example:
+        name: test-config
+        configTypeId: cea49285-6c07-42cf-9f52-09a9b115c783
+        data:
+          hostname: example.com
+          port: 80
+    configUpdate:
+      required:
       - data
-    properties:
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-      name:
-        type: string
-        example: default.ziti-tunneler-server.v1
-      data:
-        type: object
-        x-nullable: false
-        additionalProperties: true
-        description: Data payload is defined by the schema of the config-type defined in the type parameter
-    example:
-      name: example-config-name
-      data:
-        hostname: example.com
-        port: 80
-  configPatch:
-    type: object
-    description: A config patch object
-    properties:
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-      name:
-        type: string
-        example: default.ziti-tunneler-server.v1
-      data:
-        type: object
-        additionalProperties: true
-        description: Data payload is defined by the schema of the config-type defined in the type parameter
-    example:
-      name: example-config-name
-      data:
-        hostname: example.com
-        port: 80
+      - name
+      type: object
+      properties:
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+        name:
+          type: string
+          example: default.ziti-tunneler-server.v1
+        data:
+          type: object
+          additionalProperties: true
+          description: Data payload is defined by the schema of the config-type defined
+            in the type parameter
+          nullable: false
+      description: A config update object
+      example:
+        name: example-config-name
+        data:
+          hostname: example.com
+          port: 80
+    configPatch:
+      type: object
+      properties:
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+        name:
+          type: string
+          example: default.ziti-tunneler-server.v1
+        data:
+          type: object
+          additionalProperties: true
+          description: Data payload is defined by the schema of the config-type defined
+            in the type parameter
+      description: A config patch object
+      example:
+        name: example-config-name
+        data:
+          hostname: example.com
+          port: 80
+  responses:
+    listConfigs:
+      description: A list of configs
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listConfigsEnvelope'
+    detailConfig:
+      description: A singular config resource
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailConfigEnvelope'
+x-original-swagger-version: null

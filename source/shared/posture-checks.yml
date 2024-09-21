@@ -1,21 +1,25 @@
----
-
-definitions:
-  postureCheckType:
-    type: string
-    enum:
+openapi: 3.0.1
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    postureCheckType:
+      type: string
+      enum:
       - OS
       - PROCESS
       - DOMAIN
       - MAC
       - MFA
       - PROCESS_MULTI
-  osType:
-    type: string
-    enum:
+    osType:
+      type: string
+      enum:
       - Windows
       - WindowsServer
       - Android
       - iOS
       - Linux
       - macOS
+x-original-swagger-version: null

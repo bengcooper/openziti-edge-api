@@ -1,43 +1,47 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   protocols:
     get:
-      summary: Return a list of the listening Edge protocols
-      security: [ ]
       tags:
-        - Informational
+      - Informational
+      summary: Return a list of the listening Edge protocols
       operationId: listProtocols
       responses:
-        '200':
-          $ref: '#/responses/listProtocols'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listProtocols:
-    description: A list of supported Edge protocols
-    schema:
-      $ref: '#/definitions/listProtocolsEnvelope'
-
-definitions:
-  listProtocolsEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: '#/components/responses/listProtocols'
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security: []
+components:
+  schemas:
+    listProtocolsEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/listProtocols'
-  listProtocols:
-    type: object
-    additionalProperties:
-      $ref: '#/definitions/protocol'
-  protocol:
-    type: object
-    required:
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/listProtocols'
+    listProtocols:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/protocol'
+    protocol:
+      required:
       - address
-    properties:
-      address:
-        type: string
+      type: object
+      properties:
+        address:
+          type: string
+  responses:
+    listProtocols:
+      description: A list of supported Edge protocols
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listProtocolsEnvelope'
+x-original-swagger-version: null

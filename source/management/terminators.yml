@@ -1,215 +1,210 @@
----
+openapi: 3.0.1
+servers:
+- url: /
 paths:
   terminators:
     get:
+      tags:
+      - Terminator
       summary: List terminators
       description: |
         Retrieves a list of terminator resources; supports filtering, sorting, and pagination. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Terminator
       operationId: listTerminators
       parameters:
-        - $ref: '../shared/parameters.yml#/limit'
-        - $ref: '../shared/parameters.yml#/offset'
-        - $ref: '../shared/parameters.yml#/filter'
+      - $ref: ../shared/parameters.yml#/limit
+      - $ref: ../shared/parameters.yml#/offset
+      - $ref: ../shared/parameters.yml#/filter
       responses:
-        '200':
-          $ref: '#/responses/listTerminators'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/listTerminators'
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     post:
+      tags:
+      - Terminator
       summary: Create a terminator resource
       description: Create a terminator resource. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Terminator
       operationId: createTerminator
-      parameters:
-        - name: terminator
-          in: body
-          required: true
-          description: A terminator to create
-          schema:
-            $ref: '#/definitions/terminatorCreate'
+      requestBody:
+        description: A terminator to create
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/terminatorCreate'
+        required: true
       responses:
-        '201':
-          $ref: '../shared/standard-responses.yml#/responses/createResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "201":
+          $ref: ../shared/standard-responses.yml#/responses/createResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: terminator
   terminators-id:
-    parameters:
-      - $ref: '../shared/parameters.yml#/id'
     get:
+      tags:
+      - Terminator
       summary: Retrieves a single terminator
       description: Retrieves a single terminator by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Terminator
       operationId: detailTerminator
       responses:
-        '200':
-          $ref: '#/responses/detailTerminator'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+        "200":
+          $ref: '#/components/responses/detailTerminator'
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
     put:
+      tags:
+      - Terminator
       summary: Update all fields on a terminator
       description: Update all fields on a terminator by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Terminator
       operationId: updateTerminator
-      parameters:
-        - name: terminator
-          in: body
-          required: true
-          description: A terminator update object
-          schema:
-            $ref: '#/definitions/terminatorUpdate'
+      requestBody:
+        description: A terminator update object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/terminatorUpdate'
+        required: true
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/updateResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-    patch:
-      summary: Update the supplied fields on a terminator
-      description: Update the supplied fields on a terminator. Requires admin access.
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/updateResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
       security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Terminator
-      operationId: patchTerminator
-      parameters:
-        - name: terminator
-          in: body
-          required: true
-          description: A terminator patch object
-          schema:
-            $ref: '#/definitions/terminatorPatch'
-      responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/patchResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '404':
-          $ref: '../shared/standard-responses.yml#/responses/notFoundResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: terminator
     delete:
+      tags:
+      - Terminator
       summary: Delete a terminator
       description: Delete a terminator by id. Requires admin access.
-      security:
-        - ztSession: [ ]
-        - oauth2: [ openid ]
-      tags:
-        - Terminator
       operationId: deleteTerminator
       responses:
-        '200':
-          $ref: '../shared/standard-responses.yml#/responses/deleteResponse'
-        '400':
-          $ref: '../shared/standard-responses.yml#/responses/badRequestResponse'
-        '401':
-          $ref: '../shared/standard-responses.yml#/responses/unauthorizedResponse'
-        '409':
-          $ref: '../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse'
-        '429':
-          $ref: '../shared/standard-responses.yml#/responses/rateLimitedResponse'
-
-responses:
-  listTerminators:
-    description: A list of terminators
-    schema:
-      $ref: '#/definitions/listTerminatorsEnvelope'
-  detailTerminator:
-    description: A single terminator
-    schema:
-      $ref: '#/definitions/detailTerminatorEnvelope'
-
-definitions:
-  listTerminatorsEnvelope:
-    type: object
-    required:
-      - meta
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/deleteResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "409":
+          $ref: ../shared/standard-responses.yml#/responses/cannotDeleteReferencedResourceResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+    patch:
+      tags:
+      - Terminator
+      summary: Update the supplied fields on a terminator
+      description: Update the supplied fields on a terminator. Requires admin access.
+      operationId: patchTerminator
+      requestBody:
+        description: A terminator patch object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/terminatorPatch'
+        required: true
+      responses:
+        "200":
+          $ref: ../shared/standard-responses.yml#/responses/patchResponse
+        "400":
+          $ref: ../shared/standard-responses.yml#/responses/badRequestResponse
+        "404":
+          $ref: ../shared/standard-responses.yml#/responses/notFoundResponse
+        "401":
+          $ref: ../shared/standard-responses.yml#/responses/unauthorizedResponse
+        "429":
+          $ref: ../shared/standard-responses.yml#/responses/rateLimitedResponse
+      security:
+      - ztSession: []
+      - oauth2:
+        - openid
+      x-codegen-request-body-name: terminator
+    parameters:
+    - $ref: ../shared/parameters.yml#/id
+components:
+  schemas:
+    listTerminatorsEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/terminatorList'
-  detailTerminatorEnvelope:
-    type: object
-    required:
       - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/terminatorList'
+    detailTerminatorEnvelope:
+      required:
       - data
-    properties:
-      meta:
-        $ref: '../shared/standard-responses.yml#/definitions/meta'
-      data:
-        $ref: '#/definitions/terminatorDetail'
-  terminatorList:
-    type: array
-    items:
-      $ref: '#/definitions/terminatorDetail'
-  terminatorDetail:
-    type: object
-    allOf:
-      - $ref: '../shared/base-entity.yml#/definitions/baseEntity'
-      - type: object
-        required:
-          - serviceId
-          - service
-          - routerId
-          - router
-          - binding
-          - address
-          - identity
-          - cost
-          - precedence
-          - dynamicCost
+      - meta
+      type: object
+      properties:
+        meta:
+          $ref: ../shared/standard-responses.yml#/definitions/meta
+        data:
+          $ref: '#/components/schemas/terminatorDetail'
+    terminatorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/terminatorDetail'
+    terminatorDetail:
+      allOf:
+      - $ref: ../shared/base-entity.yml#/definitions/baseEntity
+      - required:
+        - address
+        - binding
+        - cost
+        - dynamicCost
+        - identity
+        - precedence
+        - router
+        - routerId
+        - service
+        - serviceId
+        type: object
         properties:
           serviceId:
             type: string
           service:
-            $ref: '../shared/base-entity.yml#/definitions/entityRef'
+            $ref: ../shared/base-entity.yml#/definitions/entityRef
           routerId:
             type: string
           router:
-            $ref: '../shared/base-entity.yml#/definitions/entityRef'
+            $ref: ../shared/base-entity.yml#/definitions/entityRef
           binding:
             type: string
           address:
@@ -217,74 +212,89 @@ definitions:
           identity:
             type: string
           cost:
-            $ref: '../shared/terminators.yml#/definitions/terminatorCost'
+            $ref: ../shared/terminators.yml#/definitions/terminatorCost
           precedence:
-            $ref: '../shared/terminators.yml#/definitions/terminatorPrecedence'
+            $ref: ../shared/terminators.yml#/definitions/terminatorPrecedence
           dynamicCost:
-            $ref: '../shared/terminators.yml#/definitions/terminatorCost'
-  terminatorCreate:
-    type: object
-    required:
-      - service
-      - router
+            $ref: ../shared/terminators.yml#/definitions/terminatorCost
+    terminatorCreate:
+      required:
       - address
       - binding
-    properties:
-      service:
-        type: string
-      router:
-        type: string
-      binding:
-        type: string
-      address:
-        type: string
-      identity:
-        type: string
-      identitySecret:
-        type: string
-        format: byte
-      cost:
-        $ref: '../shared/terminators.yml#/definitions/terminatorCost'
-      precedence:
-        $ref: '../shared/terminators.yml#/definitions/terminatorPrecedence'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  terminatorUpdate:
-    type: object
-    required:
-      - service
       - router
+      - service
+      type: object
+      properties:
+        service:
+          type: string
+        router:
+          type: string
+        binding:
+          type: string
+        address:
+          type: string
+        identity:
+          type: string
+        identitySecret:
+          pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+          type: string
+          format: byte
+        cost:
+          $ref: ../shared/terminators.yml#/definitions/terminatorCost
+        precedence:
+          $ref: ../shared/terminators.yml#/definitions/terminatorPrecedence
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+    terminatorUpdate:
+      required:
       - address
       - binding
-    properties:
-      service:
-        type: string
-      router:
-        type: string
-      binding:
-        type: string
-      address:
-        type: string
-      cost:
-        $ref: '../shared/terminators.yml#/definitions/terminatorCost'
-      precedence:
-        $ref: '../shared/terminators.yml#/definitions/terminatorPrecedence'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
-  terminatorPatch:
-    type: object
-    properties:
-      service:
-        type: string
-      router:
-        type: string
-      binding:
-        type: string
-      address:
-        type: string
-      cost:
-        $ref: '../shared/terminators.yml#/definitions/terminatorCost'
-      precedence:
-        $ref: '../shared/terminators.yml#/definitions/terminatorPrecedence'
-      tags:
-        $ref: '../shared/base-entity.yml#/definitions/tags'
+      - router
+      - service
+      type: object
+      properties:
+        service:
+          type: string
+        router:
+          type: string
+        binding:
+          type: string
+        address:
+          type: string
+        cost:
+          $ref: ../shared/terminators.yml#/definitions/terminatorCost
+        precedence:
+          $ref: ../shared/terminators.yml#/definitions/terminatorPrecedence
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+    terminatorPatch:
+      type: object
+      properties:
+        service:
+          type: string
+        router:
+          type: string
+        binding:
+          type: string
+        address:
+          type: string
+        cost:
+          $ref: ../shared/terminators.yml#/definitions/terminatorCost
+        precedence:
+          $ref: ../shared/terminators.yml#/definitions/terminatorPrecedence
+        tags:
+          $ref: ../shared/base-entity.yml#/definitions/tags
+  responses:
+    listTerminators:
+      description: A list of terminators
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/listTerminatorsEnvelope'
+    detailTerminator:
+      description: A single terminator
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/detailTerminatorEnvelope'
+x-original-swagger-version: null
